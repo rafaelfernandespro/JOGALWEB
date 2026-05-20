@@ -1,0 +1,349 @@
+@using Microsoft.AspNetCore.Http;
+
+@{
+    Layout = null;
+}
+
+@model inter.Models.Produtos
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Editar Produto</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        .upload-label
+        {
+            width: 100%;
+            height: 320px;
+
+            border: 3px dashed #F15A24;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+
+            background-color: white;
+
+            transition: 0.3s;
+
+            overflow: hidden;
+        }
+
+        .upload-label:hover
+        {
+            background-color: #fff3ee;
+        }
+
+        .preview-img
+        {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: none;
+        }
+
+        .upload-text
+        {
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+<body class="bg-light">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark shadow"
+         style="background-color:#F15A24;">
+
+        <div class="container-fluid">
+
+            <span class="navbar-brand fw-bold fs-3">
+                JOGAL
+            </span>
+
+            <div class="d-flex align-items-center me-4">
+
+                <span class="text-white fw-semibold me-3">
+
+                    Olá,
+                    @Context.Session.GetString("usuario")
+
+                </span>
+
+                <a href="/Login"
+                   class="btn btn-light fw-bold">
+
+                    Sair
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-2 p-0">
+
+                <div class="bg-dark text-white vh-100 p-3">
+
+                    <h4 class="fw-bold mb-4"
+                        style="color:#F7931E;">
+
+                        MENU
+
+                    </h4>
+
+                </div>
+
+            </div>
+
+            <!-- CONTEÚDO -->
+            <div class="col-10 p-4">
+
+                <div class="card border-0 shadow">
+
+                    <div class="card-body p-4">
+
+                        <h2 class="fw-bold mb-4">
+                            Editar Produto
+                        </h2>
+
+                        <form method="post"
+                              enctype="multipart/form-data">
+
+                            <input type="hidden"
+                                   name="Id"
+                                   value="@Model.Id">
+
+                            <input type="hidden"
+                                   name="Imagem"
+                                   value="@Model.Imagem">
+
+                            <div class="row">
+
+                                <!-- FORM -->
+                                <div class="col-md-7">
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Nome do Produto
+                                        </label>
+
+                                        <input type="text"
+                                               name="Nome"
+                                               value="@Model.Nome"
+                                               class="form-control"
+                                               required>
+
+                                    </div>
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Preço
+                                        </label>
+
+                                        <input type="text"
+                                               name="Preco"
+                                               value="@Model.Preco"
+                                               class="form-control"
+                                               required>
+
+                                    </div>
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Quantidade
+                                        </label>
+
+                                        <input type="number"
+                                               name="Qtd"
+                                               value="@Model.Qtd"
+                                               class="form-control"
+                                               required>
+
+                                    </div>
+
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Tipo
+                                        </label>
+
+                                        <select name="TipoId"
+                                                class="form-select"
+                                                required>
+
+                                            @foreach(var tipo in ViewBag.Tipos)
+                                            {
+                                                if(tipo.Id == Model.TipoId)
+                                                {
+                                                    <option value="@tipo.Id"
+                                                            selected>
+
+                                                        @tipo.Descricao
+
+                                                    </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@tipo.Id">
+
+                                                        @tipo.Descricao
+
+                                                    </option>
+                                                }
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- UPLOAD -->
+                                <div class="col-md-5">
+
+                                    <input type="file"
+                                           name="arquivoImagem"
+                                           id="arquivoImagem"
+                                           accept="image/*"
+                                           hidden>
+
+                                    <label for="arquivoImagem"
+                                           class="upload-label">
+
+                                        @if(!string.IsNullOrEmpty(Model.Imagem))
+                                        {
+                                            <img src="/uploads/@Model.Imagem"
+                                                 id="preview"
+                                                 class="preview-img"
+                                                 style="display:block;">
+                                        }
+                                        else
+                                        {
+                                            <img id="preview"
+                                                 class="preview-img">
+                                        }
+
+                                        <div class="upload-text"
+                                             id="uploadText"
+                                             style="@(string.IsNullOrEmpty(Model.Imagem)
+                                                 ? ""
+                                                 : "display:none;")">
+
+                                            <h5 class="fw-bold">
+
+                                                Upload de Imagem
+
+                                            </h5>
+
+                                            <p class="text-muted mb-0">
+
+                                                Clique para alterar
+
+                                            </p>
+
+                                        </div>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <button type="submit"
+                                    class="btn text-white fw-bold"
+                                    style="background-color:#F15A24;">
+
+                                Salvar Alterações
+
+                            </button>
+
+                            <a href="/Produtos"
+                               class="btn btn-secondary">
+
+                                Voltar
+
+                            </a>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const inputImagem =
+            document.getElementById("arquivoImagem");
+
+        const preview =
+            document.getElementById("preview");
+
+        const uploadText =
+            document.getElementById("uploadText");
+
+        inputImagem.addEventListener("change", function(e)
+        {
+            const arquivo =
+                e.target.files[0];
+
+            if(arquivo)
+            {
+                const reader =
+                    new FileReader();
+
+                reader.onload = function(event)
+                {
+                    preview.src =
+                        event.target.result;
+
+                    preview.style.display =
+                        "block";
+
+                    uploadText.style.display =
+                        "none";
+                };
+
+                reader.readAsDataURL(arquivo);
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>

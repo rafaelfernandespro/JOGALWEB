@@ -1,0 +1,434 @@
+@using Microsoft.AspNetCore.Http;
+
+@{
+    Layout = null;
+}
+
+@model List<inter.Models.Produtos>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Produtos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () =>
+        {
+            const pesquisa =
+                document.getElementById("pesquisaProduto");
+
+            const filtroTipo =
+                document.getElementById("filtroTipo");
+
+            pesquisa.addEventListener("keyup", filtrar);
+
+            filtroTipo.addEventListener("change", filtrar);
+
+            function filtrar()
+            {
+                let texto =
+                    pesquisa.value.toLowerCase();
+
+                let tipoSelecionado =
+                    filtroTipo.value
+                    .trim()
+                    .toLowerCase();
+
+                let linhas =
+                    document.querySelectorAll("tbody tr");
+
+                linhas.forEach(linha =>
+                {
+                    let nome =
+                        linha.querySelector(".nome-produto")
+                        ?.textContent
+                        .toLowerCase() || "";
+
+                    let tipo =
+                        linha.querySelector(".tipo-produto")
+                        ?.textContent
+                        .trim()
+                        .toLowerCase() || "";
+
+                    let mostrarNome =
+                        nome.includes(texto);
+
+                    let mostrarTipo =
+                        tipoSelecionado === ""
+                        || tipo === tipoSelecionado;
+
+                    linha.style.display =
+                        (mostrarNome && mostrarTipo)
+                        ? ""
+                        : "none";
+                });
+            }
+        });
+
+    </script>
+
+    <!-- NAVBAR SUPERIOR -->
+    <nav class="navbar navbar-dark shadow"
+        style="background-color:#F15A24;">
+
+        <div class="container-fluid">
+
+            <span class="navbar-brand fw-bold fs-3">
+                JOGAL
+            </span>
+
+            <div class="d-flex align-items-center me-4">
+
+                <span class="text-white fw-semibold me-3">
+
+                    Olá,
+                    @Context.Session.GetString("usuario")
+
+                </span>
+
+                <a href="/Login"
+                class="btn btn-light fw-bold">
+
+                    Sair
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-2 p-0">
+
+                <div class="bg-dark text-white vh-100 p-3">
+
+                    <h4 class="fw-bold mb-4"
+                        style="color:#F7931E;">
+
+                        MENU
+
+                    </h4>
+
+                    <ul class="nav flex-column">
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Dashboard"
+                               class="nav-link text-white">
+
+                                Dashboard
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Produtos"
+                               class="nav-link text-white fw-bold">
+
+                                Estoque
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Pedidos"
+                               class="nav-link text-white">
+
+                                Pedidos
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Usuarios"
+                               class="nav-link text-white">
+
+                                Usuários
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <!-- CONTEÚDO -->
+            <div class="col-10 p-4">
+
+                <!-- TOPO -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+
+                        <h1 class="fw-bold">
+                            Produtos
+                        </h1>
+
+                        <p class="text-muted">
+                            Gerenciamento de produtos da distribuidora
+                        </p>
+
+                    </div>
+
+                    <a href="/Produtos/Create"
+                       class="btn text-white fw-bold"
+                       style="background-color:#F15A24;">
+
+                        Novo Produto
+
+                    </a>
+
+                </div>
+
+                <div class="card border-0 shadow mb-4">
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <!-- PESQUISA -->
+                            <div class="col-md-6">
+
+                                <input type="text"
+                                    id="pesquisaProduto"
+                                    class="form-control"
+                                    placeholder="Pesquisar produto...">
+
+                            </div>
+
+                            <!-- FILTRO -->
+                            <div class="col-md-3">
+
+                                <select id="filtroTipo"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Todos os tipos
+                                    </option>
+
+                                    @foreach(var tipo in ViewBag.Tipos)
+                                    {
+                                        <option value="@tipo.Descricao">
+
+                                            @tipo.Descricao
+
+                                        </option>
+                                    }
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- TABELA -->
+                <div class="card border-0 shadow">
+
+                    <div class="card-body">
+
+                        @if (!Model.Any())
+                        {
+                            <div class="alert alert-warning">
+
+                                Nenhum produto cadastrado.
+
+                            </div>
+                        }
+                        else
+                        {
+                            <table class="table table-hover align-middle">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Imagem</th>
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Tipo</th>
+                                        <th>Preço</th>
+                                        <th>Quantidade</th>
+                                        <th>Ações</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <!-- IMAGEM -->
+                                            <td>
+
+                                                @if(string.IsNullOrEmpty(item.Imagem))
+                                                {
+                                                    <img src="https://placehold.co/80x80"
+                                                        width="70"
+                                                        height="70"
+                                                        style="
+                                                            object-fit:cover;
+                                                            border-radius:12px;
+                                                            border:2px solid #eee;">
+                                                }
+                                                else
+                                                {
+                                                    <img src="/uploads/@item.Imagem"
+                                                        width="70"
+                                                        height="70"
+                                                        style="
+                                                            object-fit:cover;
+                                                            border-radius:12px;
+                                                            border:2px solid #eee;">
+                                                }
+
+                                            </td>
+
+                                            <td>
+                                                @item.Id
+                                            </td>
+
+                                            <td class="nome-produto fw-semibold">
+                                                @item.Nome
+                                            </td>
+
+                                            <td class="tipo-produto">
+                                                @item.NomeTipo
+                                            </td>
+
+                                            <td class="fw-semibold"
+                                                style="color:#F15A24;">
+
+                                                R$ @item.Preco
+
+                                            </td>
+
+                                            <td>
+                                                @item.Qtd
+                                            </td>
+
+                                            <td>
+
+                                                <a href="/Produtos/Update/@item.Id"
+                                                class="btn btn-sm btn-warning text-white">
+
+                                                    Editar
+
+                                                </a>
+
+                                                <button class="btn btn-sm btn-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalExcluir_@item.Id">
+
+                                                    Excluir
+
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+
+                                        <!-- MODAL -->
+                                        <div class="modal fade"
+                                            id="modalExcluir_@item.Id"
+                                            tabindex="-1">
+
+                                            <div class="modal-dialog modal-dialog-centered">
+
+                                                <div class="modal-content border-0 shadow">
+
+                                                    <div class="modal-header"
+                                                        style="background-color:#F15A24;">
+
+                                                        <h5 class="modal-title text-white fw-bold">
+
+                                                            Aviso
+
+                                                        </h5>
+
+                                                        <button type="button"
+                                                                class="btn-close btn-close-white"
+                                                                data-bs-dismiss="modal">
+                                                        </button>
+
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        Deseja realmente excluir o produto
+                                                        <strong>@item.Nome</strong>?
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+
+                                                        <button type="button"
+                                                                class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+
+                                                            Cancelar
+
+                                                        </button>
+
+                                                        <a href="/Produtos/Delete/@item.Id"
+                                                        class="btn btn-danger">
+
+                                                            Excluir
+
+                                                        </a>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        }
+
+                </div>
+
+            </div>
+
+</body>
+
+</html>
+
