@@ -22,5 +22,11 @@ namespace inter.Models
 
         // RELACIONAMENTO
         public List<ItensPedido>? Itens { get; set; }
+
+        [Column("id_status")]
+        public int StatusId { get; set; }
+
+        [ForeignKey("StatusId")]
+        public StatusPedido? Status { get; set; }
     }
 }

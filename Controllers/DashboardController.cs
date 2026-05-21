@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using inter.Data;
 using inter.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace inter.Controllers
 {
@@ -25,9 +26,11 @@ namespace inter.Controllers
             vm.TotalClientes = db.Clientes.Count();
 
             vm.UltimosPedidos = db.Pedidos
-                .OrderByDescending(p => p.Id)
-                .Take(5)
-                .ToList();
+                                .Include(p => p.Itens)
+                                .Include(p => p.Status)
+                                .OrderByDescending(p => p.Id)
+                                .Take(5)
+                                .ToList();
 
             return View(vm);
         }

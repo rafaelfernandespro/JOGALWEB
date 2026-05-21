@@ -1,0 +1,212 @@
+@using Microsoft.AspNetCore.Http;
+
+@{
+    Layout = null;
+}
+
+@model inter.Models.Pedidos
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Detalhes do Pedido</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark shadow"
+        style="background-color:#F15A24;">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand d-flex align-items-center"
+            href="#">
+
+                <img src="/img/logo.png"
+                    style="height:45px;"
+                    class="me-2">
+
+            </a>
+
+            <div class="d-flex align-items-center me-4">
+
+                <span class="text-white fw-semibold me-3">
+
+                    Olá,
+                    @Context.Session.GetString("usuario")
+
+                </span>
+
+                <a href="/Login"
+                   class="btn btn-light fw-bold">
+
+                    Sair
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <div class="container mt-5">
+
+        <div class="card border-0 shadow">
+
+            <div class="card-body p-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+
+                        <h1 class="fw-bold">
+
+                            Pedido #@Model.Id
+
+                        </h1>
+
+                        <p class="text-muted">
+
+                            @Model.DataPedido.ToString("dd/MM/yyyy HH:mm")
+
+                        </p>
+
+                    </div>
+
+                    <span class="badge bg-dark fs-6">
+
+                        @Model.Status?.Descricao
+
+                    </span>
+
+                </div>
+
+                <hr class="mb-4" />
+
+                <h4 class="fw-bold mb-4">
+
+                    Itens do Pedido
+
+                </h4>
+
+                @foreach(var item in Model.Itens)
+                {
+                    <div class="card border-0 shadow-sm mb-3">
+
+                        <div class="card-body">
+
+                            <div class="row align-items-center">
+
+                                <div class="col-md-2">
+
+                                    @if(string.IsNullOrEmpty(item.Produto?.Imagem))
+                                    {
+                                        <img src="https://placehold.co/300x300"
+                                             class="img-fluid rounded">
+                                    }
+                                    else
+                                    {
+                                        <img src="/uploads/@item.Produto.Imagem"
+                                             class="img-fluid rounded">
+                                    }
+
+                                </div>
+
+                                <div class="col-md-5">
+
+                                    <h5 class="fw-bold">
+
+                                        @item.Produto?.Nome
+
+                                    </h5>
+
+                                </div>
+
+                                <div class="col-md-2 text-center">
+
+                                    <span class="text-muted">
+
+                                        Quantidade
+
+                                    </span>
+
+                                    <h5>
+
+                                        @item.Quantidade
+
+                                    </h5>
+
+                                </div>
+
+                                <div class="col-md-3 text-end">
+
+                                    <span class="text-muted">
+
+                                        Subtotal
+
+                                    </span>
+
+                                    <h5 class="fw-bold"
+                                        style="color:#F15A24;">
+
+                                        R$ @(item.Quantidade * item.PrecoUnitario)
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+                <hr class="mt-4" />
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h3 class="fw-bold">
+
+                        Total
+
+                    </h3>
+
+                    <h2 class="fw-bold"
+                        style="color:#F15A24;">
+
+                        R$ @Model.Total
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="position-fixed"
+     style="bottom:30px; left:30px; z-index:1000;">
+
+        <a href="/Historico"
+        class="btn btn-dark fw-bold px-4 py-2 shadow-lg rounded-3">
+
+            ← Voltar
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>

@@ -142,3 +142,4 @@ C:\Users\rafae\Documents\inter-20260510T133027Z-3-001\inter\obj\Debug\net8.0\ref
 C:\Users\rafae\Documents\inter-20260510T133027Z-3-001\inter\obj\Debug\net8.0\inter.pdb
 C:\Users\rafae\Documents\inter-20260510T133027Z-3-001\inter\obj\Debug\net8.0\inter.genruntimeconfig.cache
 C:\Users\rafae\Documents\inter-20260510T133027Z-3-001\inter\obj\Debug\net8.0\ref\inter.dll
+C:\Users\rafae\Documents\inter-20260510T133027Z-3-001\inter\obj\Debug\net8.0\inter.sourcelink.json

@@ -1,105 +1,282 @@
-using Microsoft.AspNetCore.Mvc;
+using inter.Data;
+using inter.Helpers;
 using inter.Models;
-using System.Text.Json;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace inter.Controllers
 {
     public class CarrinhoController : Controller
     {
-        private const string CHAVE_CARRINHO = "carrinho";
+        private readonly DatabaseContext db;
 
-        // Pega o carrinho da Session
-        private List<CarrinhoItem> GetCarrinho()
+        public CarrinhoController(DatabaseContext context)
         {
-            var carrinhoJson = HttpContext.Session.GetString(CHAVE_CARRINHO);
-
-            if (string.IsNullOrEmpty(carrinhoJson))
-                return new List<CarrinhoItem>();
-
-            return JsonSerializer.Deserialize<List<CarrinhoItem>>(carrinhoJson);
+            db = context;
         }
 
-        // Salva o carrinho na Session
-        private void SalvarCarrinho(List<CarrinhoItem> carrinho)
-        {
-            var json = JsonSerializer.Serialize(carrinho);
-            HttpContext.Session.SetString(CHAVE_CARRINHO, json);
-        }
-
-        // Exibir carrinho (View)
+        // MOSTRAR CARRINHO
         public IActionResult Index()
         {
-            var carrinho = GetCarrinho();
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+                ?? new List<CarrinhoItem>();
+
             return View(carrinho);
         }
 
-        // Adicionar item no carrinho
+        // ADICIONAR PRODUTO
         [HttpPost]
-        public IActionResult Adicionar(CarrinhoItem item)
+        public IActionResult Adicionar(
+            int produtoId,
+            int quantidade)
         {
-            var carrinho = GetCarrinho();
+            var produto =
+                db.Produtos
+                .FirstOrDefault(p => p.Id == produtoId);
 
-            var itemExistente = carrinho.FirstOrDefault(x => x.ProdutoId == item.ProdutoId);
-
-            if (itemExistente != null)
+            if(produto == null)
             {
-                itemExistente.Quantidade += item.Quantidade;
+                return NotFound();
+            }
+
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+                ?? new List<CarrinhoItem>();
+
+            var itemExistente =
+                carrinho.FirstOrDefault(i =>
+                    i.ProdutoId == produtoId);
+
+            // SE JÁ EXISTE
+            if(itemExistente != null)
+            {
+                itemExistente.Quantidade += quantidade;
             }
             else
             {
-                carrinho.Add(item);
+                carrinho.Add(new CarrinhoItem
+                {
+                    ProdutoId = produto.Id,
+                    Nome = produto.Nome,
+                    Preco = produto.Preco,
+                    Quantidade = quantidade,
+                    Imagem = produto.Imagem
+                });
             }
 
-            SalvarCarrinho(carrinho);
+            HttpContext.Session
+                .SetObjectAsJson("Carrinho", carrinho);
 
-            return Json(carrinho);
+            return Ok();
         }
 
-        // Remover item
+        // AUMENTAR QUANTIDADE
+        [HttpPost]
+        public IActionResult Aumentar(int produtoId)
+        {
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+                ?? new List<CarrinhoItem>();
+
+            var item =
+                carrinho.FirstOrDefault(i =>
+                    i.ProdutoId == produtoId);
+
+            if(item != null)
+            {
+                item.Quantidade++;
+            }
+
+            HttpContext.Session.SetObjectAsJson(
+                "Carrinho",
+                carrinho);
+
+           return Ok();
+        }
+
+        // DIMINUIR QUANTIDADE
+        [HttpPost]
+        public IActionResult Diminuir(int produtoId)
+        {
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
+
+            if(carrinho != null)
+            {
+                var item =
+                    carrinho.FirstOrDefault(i =>
+                        i.ProdutoId == produtoId);
+
+                if(item != null)
+                {
+                    item.Quantidade--;
+
+                    // REMOVE SE CHEGAR EM 0
+                    if(item.Quantidade <= 0)
+                    {
+                        carrinho.Remove(item);
+                    }
+                }
+
+                HttpContext.Session
+                    .SetObjectAsJson("Carrinho", carrinho);
+            }
+
+            
+            return Ok();
+        }
+
+        // REMOVER ITEM
         [HttpPost]
         public IActionResult Remover(int produtoId)
         {
-            var carrinho = GetCarrinho();
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
 
-            var item = carrinho.FirstOrDefault(x => x.ProdutoId == produtoId);
-
-            if (item != null)
+            if(carrinho != null)
             {
-                carrinho.Remove(item);
-            }
+                var item =
+                    carrinho.FirstOrDefault(i =>
+                        i.ProdutoId == produtoId);
 
-            SalvarCarrinho(carrinho);
-
-            return Json(carrinho);
-        }
-
-        // Atualizar quantidade
-        [HttpPost]
-        public IActionResult Atualizar(int produtoId, int quantidade)
-        {
-            var carrinho = GetCarrinho();
-
-            var item = carrinho.FirstOrDefault(x => x.ProdutoId == produtoId);
-
-            if (item != null)
-            {
-                item.Quantidade = quantidade;
-
-                if (item.Quantidade <= 0)
+                if(item != null)
+                {
                     carrinho.Remove(item);
+                }
+
+                HttpContext.Session
+                    .SetObjectAsJson("Carrinho", carrinho);
             }
 
-            SalvarCarrinho(carrinho);
-
-            return Json(carrinho);
+            return Ok();
         }
 
-        // Limpar carrinho
+        // LIMPAR CARRINHO
         [HttpPost]
         public IActionResult Limpar()
         {
-            HttpContext.Session.Remove(CHAVE_CARRINHO);
-            return Json(new { sucesso = true });
+            HttpContext.Session.Remove("Carrinho");
+
+            return Ok();
+        }
+
+
+        // FINALIZAR PEDIDO
+        [HttpPost]
+        public IActionResult FinalizarPedido()
+        {
+            // PEGAR CARRINHO
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
+
+            if(carrinho == null || !carrinho.Any())
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Catalogo");
+            }
+
+            // PEGAR CLIENTE LOGADO
+            int clienteId =
+                Convert.ToInt32(
+                    HttpContext.Session.GetInt32("clienteId"));
+
+            // CALCULAR TOTAL
+            decimal total =
+                carrinho.Sum(i =>
+                    i.Preco * i.Quantidade);
+
+
+            foreach(var item in carrinho)
+            {
+                var produto =
+                    db.Produtos
+                    .FirstOrDefault(p =>
+                        p.Id == item.ProdutoId);
+
+                if(produto == null)
+                {
+                    TempData["Erro"] =
+                        "Produto não encontrado.";
+
+                    return RedirectToAction(
+                        "Index",
+                        "Catalogo");
+                }
+
+                if(produto.Qtd < item.Quantidade)
+                {
+                    TempData["Erro"] =
+                        $"Estoque insuficiente para {produto.Nome}.";
+
+                    return RedirectToAction(
+                        "Index",
+                        "Catalogo");
+                }
+            }
+
+            // CRIAR PEDIDO
+            Pedidos pedido = new Pedidos
+            {
+                ClienteId = clienteId,
+
+                DataPedido = DateTime.Now,
+
+                Total = total,
+
+                StatusId = 1
+            };
+
+            db.Pedidos.Add(pedido);
+
+            db.SaveChanges();
+
+            // CRIAR ITENS
+            foreach(var item in carrinho)
+            {
+                ItensPedido novoItem =
+                    new ItensPedido
+                    {
+                        PedidoId = pedido.Id,
+
+                        ProdutoId = item.ProdutoId,
+
+                        Quantidade = item.Quantidade,
+
+                        PrecoUnitario = item.Preco
+                    };
+
+                db.ItensPedido.Add(novoItem);
+
+                // BAIXAR ESTOQUE
+                var produto =
+                    db.Produtos
+                    .FirstOrDefault(p =>
+                        p.Id == item.ProdutoId);
+
+                if(produto != null)
+                {
+                    produto.Qtd -= item.Quantidade;
+                }
+            }
+
+            db.SaveChanges();
+
+            // LIMPAR CARRINHO
+            HttpContext.Session.Remove("Carrinho");
+
+            TempData["PedidoSucesso"] = true;
+
+            return RedirectToAction(
+                "Index",
+                "Catalogo");
         }
     }
 }

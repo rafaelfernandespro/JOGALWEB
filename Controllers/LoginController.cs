@@ -33,6 +33,9 @@ namespace inter.Controllers
 
             HttpContext.Session.SetString("usuario", usuario.Nome);
             HttpContext.Session.SetString("tipo", usuario.Tipo.ToString());
+            
+            // ID DO CLIENTE
+            HttpContext.Session.SetInt32("clienteId",usuario.Id);
 
             if (usuario.Tipo == 2)
             {

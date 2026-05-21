@@ -224,8 +224,8 @@
 
                                         <th>ID</th>
                                         <th>Cliente</th>
-                                        <th>Produto</th>
-                                        <th>Quantidade</th>
+                                        <th>Total Itens</th>
+                                        <th>Status</th>
                                         <th>Data</th>
 
                                     </tr>
@@ -246,9 +246,22 @@
                                                 @pedido.ClienteId
                                             </td>
 
+                                            <td>
+                                                @(pedido.Itens != null
+                                                    ? pedido.Itens.Sum(i => i.Quantidade)
+                                                    : 0)
+                                            </td>
 
                                             <td>
-                                                @pedido.DataPedido
+
+                                                @pedido.Status?.Descricao
+
+                                            </td>
+
+                                            <td>
+
+                                                @pedido.DataPedido.ToString("dd/MM/yyyy HH:mm")
+
                                             </td>
 
                                         </tr>

@@ -1,0 +1,522 @@
+@using Microsoft.AspNetCore.Http;
+
+@{
+    Layout = null;
+}
+
+@model inter.Models.Pedidos
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Detalhes Pedido</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        .produto-img
+        {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        .item-card
+        {
+            transition: 0.2s;
+            border-radius: 18px;
+        }
+
+        .item-card:hover
+        {
+            transform: translateY(-2px);
+        }
+
+    </style>
+
+</head>
+
+<body class="bg-light">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+        @if(TempData["Sucesso"] != null)
+    {
+        <div id="popupSucesso"
+            class="alert alert-success shadow position-fixed top-0 end-0 m-4"
+            style="z-index:9999; min-width:300px;">
+
+            @TempData["Sucesso"]
+
+        </div>
+    }
+
+    @if(TempData["Erro"] != null)
+    {
+        <div id="popupErro"
+            class="alert alert-danger shadow position-fixed top-0 end-0 m-4"
+            style="z-index:9999; min-width:300px;">
+
+            @TempData["Erro"]
+
+        </div>
+    }
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark shadow"
+         style="background-color:#F15A24;">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand d-flex align-items-center"
+            href="#">
+
+                <img src="/img/logo.png"
+                    style="height:45px;"
+                    class="me-2">
+
+            </a>
+
+            <div class="d-flex align-items-center me-4">
+
+                <span class="text-white fw-semibold me-3">
+
+                    Olá,
+                    @Context.Session.GetString("usuario")
+
+                </span>
+
+                <a href="/Login"
+                   class="btn btn-light fw-bold">
+
+                    Sair
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-2 p-0">
+
+                <div class="bg-dark text-white vh-100 p-3">
+
+                    <h4 class="fw-bold mb-4"
+                        style="color:#F7931E;">
+
+                        MENU
+
+                    </h4>
+
+                    <ul class="nav flex-column">
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Dashboard"
+                               class="nav-link text-white">
+
+                                Dashboard
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Produtos"
+                               class="nav-link text-white">
+
+                                Estoque
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Pedidos"
+                               class="nav-link text-white fw-bold">
+
+                                Pedidos
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Usuarios"
+                               class="nav-link text-white">
+
+                                Usuários
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <!-- CONTEÚDO -->
+            <div class="col-10 p-4">
+
+                <!-- TOPO -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+
+                        <h1 class="fw-bold">
+
+                            Pedido #@Model.Id
+
+                        </h1>
+
+                        <p class="text-muted">
+
+                            @(Model.DataPedido.ToString("dd/MM/yyyy HH:mm"))
+
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        @{
+                            string corStatus = Model.StatusId switch
+                            {
+                                1 => "bg-warning text-dark",
+                                2 => "bg-info text-dark",
+                                3 => "bg-primary",
+                                4 => "bg-success",
+                                5 => "bg-danger",
+                                _ => "bg-secondary"
+                            };
+                        }
+
+                        <span class="badge fs-6 @corStatus">
+
+                            @Model.Status?.Descricao
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- ITENS -->
+                <div class="card border-0 shadow">
+
+                    <div class="card-body p-4">
+
+                        <h4 class="fw-bold mb-4">
+
+                            Itens do Pedido
+
+                        </h4>
+
+                        @foreach(var item in Model.Itens)
+                        {
+                            <div class="card item-card border-0 shadow-sm mb-3">
+
+                                <div class="card-body">
+
+                                    <div class="row align-items-center">
+
+                                        <!-- IMAGEM -->
+                                        <div class="col-md-2">
+
+                                            <img src="/uploads/@item.Produto?.Imagem"
+                                                 class="produto-img">
+
+                                        </div>
+
+                                        <!-- NOME -->
+                                        <div class="col-md-4">
+
+                                            <h5 class="fw-bold mb-1">
+
+                                                @item.Produto?.Nome
+
+                                            </h5>
+
+                                        </div>
+
+                                        <!-- QUANTIDADE -->
+                                        <div class="col-md-3">
+
+                                            Quantidade:
+
+                                            <strong>
+
+                                                @item.Quantidade
+
+                                            </strong>
+
+                                        </div>
+
+                                        <!-- SUBTOTAL -->
+                                        <div class="col-md-3 text-end">
+
+                                            <strong class="fs-5"
+                                                    style="color:#F15A24;">
+
+                                                R$ @(item.PrecoUnitario * item.Quantidade)
+
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
+                        <hr class="my-4" />
+
+                        <!-- TOTAL -->
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <h3 class="fw-bold">
+
+                                Total do Pedido
+
+                            </h3>
+
+                            <h2 class="fw-bold"
+                                style="color:#F15A24;">
+
+                                R$ @Model.Total
+
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- STATUS -->
+                <div class="card border-0 shadow mt-4">
+
+                    <div class="card-body p-4">
+
+                        <h4 class="fw-bold mb-4">
+
+                            Alterar Status
+
+                        </h4>
+
+                        @if(Model.StatusId == 4 || Model.StatusId == 5)
+                        {
+                            <div class="alert alert-dark">
+
+                                Este pedido está finalizado e não pode mais ser alterado.
+
+                            </div>
+                        }
+                        else
+                        {
+                            <form method="post"
+                                    action="/Pedidos/AlterarStatus"
+                                    id="formStatus">
+
+                                <input type="hidden"
+                                    name="pedidoId"
+                                    value="@Model.Id">
+
+                                <div class="row align-items-end">
+
+                                    <div class="col-md-4">
+
+                                        <label class="form-label fw-semibold">
+
+                                            Novo Status
+
+                                        </label>
+
+                                        <select name="statusId"
+                                                class="form-select">
+
+                                            @foreach(var status in ViewBag.Status)
+                                            {
+                                                if(status.Id == Model.StatusId)
+                                                {
+                                                    <option value="@status.Id" selected>
+
+                                                        @status.Descricao
+
+                                                    </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@status.Id">
+
+                                                        @status.Descricao
+
+                                                    </option>
+                                                }
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <button type="button"
+                                                class="btn text-white fw-bold w-100"
+                                                style="background-color:#F15A24;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalStatus">
+
+                                            Salvar Status
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- MODAL CONFIRMAÇÃO -->
+                                <div class="modal fade"
+                                    id="modalStatus"
+                                    tabindex="-1">
+
+                                    <div class="modal-dialog modal-dialog-centered">
+
+                                        <div class="modal-content border-0 shadow">
+
+                                            <div class="modal-header"
+                                                style="background-color:#F15A24;">
+
+                                                <h5 class="modal-title text-white fw-bold">
+
+                                                    Confirmar Alteração
+
+                                                </h5>
+
+                                                <button type="button"
+                                                        class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal">
+                                                </button>
+
+                                            </div>
+
+                                            <div class="modal-body">
+
+                                                Deseja realmente alterar o status deste pedido?
+
+                                            </div>
+
+                                            <div class="modal-footer">
+
+                                                <button type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+
+                                                    Cancelar
+
+                                                </button>
+
+                                                <button type="submit"
+                                                        form="formStatus"
+                                                        class="btn btn-success">
+
+                                                    Confirmar
+
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </form>
+
+                        }
+                    </div>
+
+                </div>
+
+                <!-- VOLTAR -->
+                <div class="mt-4">
+
+                    <a href="/Pedidos"
+                       class="btn btn-dark fw-bold px-4 py-2 shadow">
+
+                        ← Voltar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        setTimeout(() =>
+        {
+            let sucesso =
+                document.getElementById("popupSucesso");
+
+            if(sucesso)
+            {
+                sucesso.style.transition = "0.5s";
+                sucesso.style.opacity = "0";
+
+                setTimeout(() =>
+                {
+                    sucesso.remove();
+                }, 500);
+            }
+
+        }, 5000);
+
+        setTimeout(() =>
+        {
+            let erro =
+                document.getElementById("popupErro");
+
+            if(erro)
+            {
+                erro.style.transition = "0.5s";
+                erro.style.opacity = "0";
+
+                setTimeout(() =>
+                {
+                    erro.remove();
+                }, 500);
+            }
+
+        }, 5000);
+
+    </script>
+
+</body>
+
+</html>
+

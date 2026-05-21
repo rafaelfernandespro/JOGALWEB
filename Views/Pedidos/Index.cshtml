@@ -1,0 +1,243 @@
+@using Microsoft.AspNetCore.Http;
+
+@{
+    Layout = null;
+}
+
+@model List<inter.Models.Pedidos>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Pedidos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark shadow"
+         style="background-color:#F15A24;">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand d-flex align-items-center"
+            href="#">
+
+                <img src="/img/logo.png"
+                    style="height:45px;"
+                    class="me-2">
+
+            </a>
+
+            <div class="d-flex align-items-center me-4">
+
+                <span class="text-white fw-semibold me-3">
+
+                    Olá,
+                    @Context.Session.GetString("usuario")
+
+                </span>
+
+                <a href="/Login"
+                   class="btn btn-light fw-bold">
+
+                    Sair
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-2 p-0">
+
+                <div class="bg-dark text-white vh-100 p-3">
+
+                    <h4 class="fw-bold mb-4"
+                        style="color:#F7931E;">
+
+                        MENU
+
+                    </h4>
+
+                    <ul class="nav flex-column">
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Dashboard"
+                               class="nav-link text-white">
+
+                                Dashboard
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Produtos"
+                               class="nav-link text-white">
+
+                                Estoque
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Pedidos"
+                               class="nav-link text-white fw-bold">
+
+                                Pedidos
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item mb-2">
+
+                            <a href="/Usuarios"
+                               class="nav-link text-white">
+
+                                Usuários
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <!-- CONTEÚDO -->
+            <div class="col-10 p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+
+                        <h1 class="fw-bold">
+                            Pedidos
+                        </h1>
+
+                        <p class="text-muted">
+                            Gerenciamento de pedidos
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="card border-0 shadow">
+
+                    <div class="card-body">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Data</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                @foreach(var pedido in Model)
+                                {
+                                    string corStatus = pedido.StatusId switch
+                                    {
+                                        1 => "bg-warning text-dark",
+                                        2 => "bg-info text-dark",
+                                        3 => "bg-primary",
+                                        4 => "bg-success",
+                                        5 => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+
+                                    <tr>
+
+                                        <td>
+                                            #@pedido.Id
+                                        </td>
+
+                                        <td>
+                                            @pedido.ClienteId
+                                        </td>
+
+                                        <td>
+                                            @pedido.DataPedido.ToString("dd/MM/yyyy HH:mm")
+                                        </td>
+
+                                        <td class="fw-bold"
+                                            style="color:#F15A24;">
+
+                                            R$ @pedido.Total
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="badge @corStatus">
+
+                                                @pedido.Status?.Descricao
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <a href="/Pedidos/Detalhes/@pedido.Id"
+                                               class="btn btn-dark btn-sm">
+
+                                                Detalhes
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -7,12 +7,23 @@
 
         <div class="text-center mb-4">
 
-            <img src="/img/logo-jogal.png"
+            <img src="/img/logo.png"
                  style="width: 220px;">
 
         </div>
 
         <form method="post" asp-action="Entrar">
+
+            @if(ViewBag.Erro != null)
+            {
+                <div id="popupErro"
+                    class="alert alert-danger shadow position-fixed top-0 end-0 m-4"
+                    style="z-index:9999; min-width:300px;">
+
+                    @ViewBag.Erro
+
+                </div>
+            }
 
             <div class="mb-3">
 
@@ -50,3 +61,25 @@
     </div>
 
 </div>
+
+<script>
+
+    setTimeout(() =>
+    {
+        let erro =
+            document.getElementById("popupErro");
+
+        if(erro)
+        {
+            erro.style.transition = "0.5s";
+            erro.style.opacity = "0";
+
+            setTimeout(() =>
+            {
+                erro.remove();
+            }, 500);
+        }
+
+    }, 5000);
+
+</script>

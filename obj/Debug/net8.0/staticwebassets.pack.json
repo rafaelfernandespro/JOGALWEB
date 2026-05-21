@@ -245,8 +245,16 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\logo\\logo.png",
+      "PackagePath": "staticwebassets\\logo\\logo.png"
+    },
+    {
       "Id": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\6397543d-e5b8-4936-b2f0-ed088e992f76.webp",
       "PackagePath": "staticwebassets\\uploads\\6397543d-e5b8-4936-b2f0-ed088e992f76.webp"
+    },
+    {
+      "Id": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\87a64ec1-0009-4427-81a6-ecbcab304e1e.webp",
+      "PackagePath": "staticwebassets\\uploads\\87a64ec1-0009-4427-81a6-ecbcab304e1e.webp"
     },
     {
       "Id": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\barra-de-chocolate-ao-leite-nestle_1083943.webp",

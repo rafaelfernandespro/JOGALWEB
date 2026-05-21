@@ -24,5 +24,6 @@ namespace inter.Data
         public DbSet<Tipos> Tipos { get; set; }
         public DbSet<TipoPessoa> TipoPessoas { get; set; }
         public DbSet<Operadores> Operadores { get; set; }
+        public DbSet<StatusPedido> StatusPedido { get; set; }
     }
 }

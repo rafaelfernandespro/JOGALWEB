@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nudDKBXy2qG79mHt9/gzPUOfL4CCGOjEH7GHiba/BoM=",
+  "Hash": "jUNvn4oT0OmsnRv5Ug0RtvAS6AqD55t14/YpMumsl0Y=",
   "Source": "inter",
   "BasePath": "_content/inter",
   "Mode": "Default",
@@ -1195,6 +1195,25 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
     },
     {
+      "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\logo\\logo.png",
+      "SourceId": "inter",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\",
+      "BasePath": "_content/inter",
+      "RelativePath": "logo/logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\logo\\logo.png"
+    },
+    {
       "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\6397543d-e5b8-4936-b2f0-ed088e992f76.webp",
       "SourceId": "inter",
       "SourceType": "Discovered",
@@ -1212,6 +1231,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\6397543d-e5b8-4936-b2f0-ed088e992f76.webp"
+    },
+    {
+      "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\87a64ec1-0009-4427-81a6-ecbcab304e1e.webp",
+      "SourceId": "inter",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\",
+      "BasePath": "_content/inter",
+      "RelativePath": "uploads/87a64ec1-0009-4427-81a6-ecbcab304e1e.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\87a64ec1-0009-4427-81a6-ecbcab304e1e.webp"
     },
     {
       "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\barra-de-chocolate-ao-leite-nestle_1083943.webp",
