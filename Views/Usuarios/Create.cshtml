@@ -181,15 +181,20 @@
                                 </label>
 
                                 <select name="Tipo"
-                                        class="form-select"
-                                        required>
+                                        class="form-select">
 
-                                    @foreach(var tipo in ViewBag.Tipos)
+                                    <option value="1">
+                                        CLIENTE
+                                    </option>
+
+                                    @if(Context.Session.GetString("tipo") == "2")
                                     {
-                                        <option value="@tipo.Id">
+                                        <option value="2">
+                                            OPERADOR
+                                        </option>
 
-                                            @tipo.Descricao
-
+                                        <option value="3">
+                                            FUNCIONARIO
                                         </option>
                                     }
 

@@ -180,27 +180,52 @@
                                     Tipo
                                 </label>
 
-                                <select name="Tipo"
+                               <select name="Tipo"
                                         class="form-select">
 
-                                    @foreach(var tipo in ViewBag.Tipos)
+                                    @if(Model.Tipo == 1)
                                     {
-                                        if(tipo.Id == Model.Tipo)
+                                        <option value="1" selected>
+                                            Cliente
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="1">
+                                            Cliente
+                                        </option>
+                                    }
+
+                                    @if(Context.Session.GetString("tipo") == "2")
+                                    {
+                                        @if(Model.Tipo == 2)
                                         {
-                                            <option value="@tipo.Id" selected>
-                                                @tipo.Descricao
+                                            <option value="2" selected>
+                                                Operador
                                             </option>
                                         }
                                         else
                                         {
-                                            <option value="@tipo.Id">
-                                                @tipo.Descricao
+                                            <option value="2">
+                                                Operador
+                                            </option>
+                                        }
+
+                                        @if(Model.Tipo == 3)
+                                        {
+                                            <option value="3" selected>
+                                                Funcionário
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="3">
+                                                Funcionário
                                             </option>
                                         }
                                     }
 
                                 </select>
-
                             </div>
 
                             <button type="submit"

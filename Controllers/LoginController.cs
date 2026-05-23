@@ -37,7 +37,7 @@ namespace inter.Controllers
             // ID DO CLIENTE
             HttpContext.Session.SetInt32("clienteId",usuario.Id);
 
-            if (usuario.Tipo == 2)
+            if(usuario.Tipo == 2 || usuario.Tipo == 3)
             {
                 return RedirectToAction("Index", "Dashboard");
             }

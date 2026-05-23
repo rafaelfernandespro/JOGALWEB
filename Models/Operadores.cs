@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace inter.Models
 {
     [Table("operadores")]
@@ -9,7 +8,7 @@ namespace inter.Models
     {
         [Key]
         [Column("op_codigo")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
-
     }
 }

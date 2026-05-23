@@ -150,26 +150,33 @@
 
                             </div>
 
-                            <div class="col-md-3">
+                            @if(Context.Session.GetString("tipo") == "2")
+                            {
+                                <div class="col-md-3">
 
-                                <select id="filtroTipo"
-                                        class="form-select">
+                                    <select id="filtroTipo"
+                                            class="form-select">
 
-                                    <option value="">
-                                        Todos os tipos
-                                    </option>
+                                        <option value="">
+                                            Todos os tipos
+                                        </option>
 
-                                    <option value="CLIENTE">
-                                        Cliente
-                                    </option>
+                                        <option value="CLIENTE">
+                                            Cliente
+                                        </option>
 
-                                    <option value="OPERADOR">
-                                        Operador
-                                    </option>
+                                        <option value="OPERADOR">
+                                            Operador
+                                        </option>
 
-                                </select>
+                                        <option value="FUNCIONÁRIO">
+                                            Funcionário
+                                        </option>
 
-                            </div>
+                                    </select>
+
+                                </div>
+                            }
 
                         </div>
 
@@ -213,10 +220,13 @@
 
                                     @foreach(var item in Model)
                                     {
-                                        string tipo = item.Tipo == 1
-                                            ? "CLIENTE"
-                                            : "OPERADOR";
-
+                                        string tipo = item.Tipo switch
+                                        {
+                                            1 => "CLIENTE",
+                                            2 => "OPERADOR",
+                                            3 => "FUNCIONÁRIO",
+                                            _ => "DESCONHECIDO"
+                                        };
                                         <tr>
 
                                             <td>
@@ -329,7 +339,6 @@
 
     </div>
 
-    <!-- SCRIPT PESQUISA -->
     <script>
 
         const pesquisa =
@@ -340,7 +349,11 @@
 
         pesquisa.addEventListener("keyup", filtrar);
 
-        filtroTipo.addEventListener("change", filtrar);
+        // SÓ ADICIONA EVENTO SE EXISTIR
+        if(filtroTipo)
+        {
+            filtroTipo.addEventListener("change", filtrar);
+        }
 
         function filtrar()
         {
@@ -349,13 +362,20 @@
                 .trim()
                 .toLowerCase();
 
-            let tipoSelecionado =
-                filtroTipo.value
-                .trim()
-                .toLowerCase();
+            let tipoSelecionado = "";
+
+            // SÓ PEGA VALOR SE EXISTIR
+            if(filtroTipo)
+            {
+                tipoSelecionado =
+                    filtroTipo.value
+                    .trim()
+                    .toLowerCase();
+            }
 
             let linhas =
-                document.querySelectorAll("#tabelaUsuarios tbody tr");
+                document.querySelectorAll(
+                    "#tabelaUsuarios tbody tr");
 
             linhas.forEach(linha =>
             {
@@ -377,12 +397,12 @@
                     .trim()
                     .toLowerCase();
 
-                // pesquisa
+                // PESQUISA
                 let pesquisaOk =
                     nome.includes(texto)
                     || email.includes(texto);
 
-                // filtro
+                // FILTRO
                 let filtroOk =
                     tipoSelecionado === ""
                     || tipoLinha.includes(tipoSelecionado);
