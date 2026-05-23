@@ -75,7 +75,7 @@ namespace inter.Controllers
             }
 
             // STATUS CANCELADO
-            pedido.StatusId = 5;
+            TempData["PedidoCancelado"] = true;
 
             // DEVOLVER ESTOQUE
             var itens =

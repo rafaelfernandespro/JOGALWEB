@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\rafae\Documents\inter-20260510T133027Z-3-001\inter
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/rafae/Documents/inter-20260510T133027Z-3-001/inter/Views/Carrinho/_CarrinhoPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FycmluaG9cX0NhcnJpbmhvUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/rafae/Documents/inter-20260510T133027Z-3-001/inter/Views/Catalogo/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ29cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -44,6 +48,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/rafae/Documents/inter-20260510T133027Z-3-001/inter/Views/Pedidos/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rafae/Documents/inter-20260510T133027Z-3-001/inter/Views/Perfil/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyZmlsXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/rafae/Documents/inter-20260510T133027Z-3-001/inter/Views/Produtos/Create.cshtml]

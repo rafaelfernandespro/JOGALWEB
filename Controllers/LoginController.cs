@@ -31,6 +31,7 @@ namespace inter.Controllers
                 return View("Index");
             }
 
+            HttpContext.Session.SetString("id",usuario.Id.ToString());
             HttpContext.Session.SetString("usuario", usuario.Nome);
             HttpContext.Session.SetString("tipo", usuario.Tipo.ToString());
             

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UbqAb33qNx+pB16XcKp8WXvBRORnwM9g0ebfNe57Nss=",
+  "Hash": "nYTzMg8yR8NFKN0PsSOblmtJG3dEv7S0FrUn5m/nGog=",
   "Source": "inter",
   "BasePath": "_content/inter",
   "Mode": "Default",
@@ -1195,12 +1195,12 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\logo\\logo.png",
+      "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\logo\\logo.jpg",
       "SourceId": "inter",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\",
       "BasePath": "_content/inter",
-      "RelativePath": "logo/logo.png",
+      "RelativePath": "logo/logo.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1211,7 +1211,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\logo\\logo.png"
+      "OriginalItemSpec": "wwwroot\\logo\\logo.jpg"
     },
     {
       "Identity": "C:\\Users\\rafae\\Documents\\inter-20260510T133027Z-3-001\\inter\\wwwroot\\uploads\\19f1c7ca-8bfd-4dc7-8e0d-dde433093cec.jpg",

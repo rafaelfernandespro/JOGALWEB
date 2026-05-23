@@ -1,0 +1,173 @@
+@using inter.Helpers;
+@using inter.Models;
+@using Microsoft.AspNetCore.Http;
+@model List<CarrinhoItem>
+
+@{
+    var carrinho =
+        Context.Session
+        .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+        ?? new List<CarrinhoItem>();
+
+    decimal totalCarrinho =
+        carrinho.Sum(i => i.Preco * i.Quantidade);
+}
+
+@if(!carrinho.Any())
+{
+    <div class="alert alert-warning text-center">
+
+        Carrinho vazio.
+
+    </div>
+}
+else
+{
+    @foreach(var item in carrinho)
+    {
+        <div class="card border-0 shadow-sm mb-3 produto-carrinho">
+
+            <div class="card-body">
+
+                <div class="d-flex gap-3">
+
+                    @if(string.IsNullOrEmpty(item.Imagem))
+                    {
+                        <img src="https://placehold.co/100x100"
+                             width="80"
+                             height="80"
+                             style="object-fit:cover;
+                                    border-radius:12px;">
+                    }
+                    else
+                    {
+                        <img src="/uploads/@item.Imagem"
+                             width="80"
+                             height="80"
+                             style="object-fit:cover;
+                                    border-radius:12px;">
+                    }
+
+                    <div class="flex-grow-1">
+
+                        <h6 class="fw-bold">
+
+                            @item.Nome
+
+                        </h6>
+
+                        <p class="mb-2 text-muted">
+
+                            R$ @item.Preco
+
+                        </p>
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <button class="btn btn-sm btn-outline-dark"
+                                    onclick="diminuir(@item.ProdutoId)">
+
+                                -
+
+                            </button>
+
+                            <strong>
+
+                                @item.Quantidade
+
+                            </strong>
+
+                            <button class="btn btn-sm btn-outline-dark"
+                                    onclick="aumentar(@item.ProdutoId)">
+
+                                +
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+    <hr />
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h5 class="fw-bold">
+            Total
+        </h5>
+
+        <h4 class="fw-bold"
+            style="color:#F15A24;">
+
+            R$ @totalCarrinho
+
+        </h4>
+
+    </div>
+
+    <button class="btn btn-outline-danger w-100 fw-bold mb-3"
+            data-bs-toggle="modal"
+            data-bs-target="#modalLimparCarrinho">
+
+        Limpar Carrinho
+
+    </button>
+
+    <form method="post"
+          action="/Carrinho/FinalizarPedido">
+
+        <button class="btn w-100 text-white fw-bold"
+                style="background-color:#F15A24;">
+
+            Finalizar Pedido
+
+        </button>
+
+    </form>
+
+}
+
+<script>
+
+    async function atualizarCarrinho()
+    {
+        const resposta =
+            await fetch("/Carrinho/CarrinhoPartial");
+
+        const html =
+            await resposta.text();
+
+        document.getElementById(
+            "conteudoCarrinho").innerHTML = html;
+
+        // CONTA PRODUTOS DIFERENTES
+        const produtos =
+            document.querySelectorAll(
+                "#conteudoCarrinho .produto-carrinho");
+
+        const total =
+            produtos.length;
+
+        const badge =
+            document.getElementById(
+                "badgeCarrinho");
+
+        badge.innerText = total;
+
+        if(total > 0)
+        {
+            badge.classList.remove("d-none");
+        }
+        else
+        {
+            badge.classList.add("d-none");
+        }
+    }
+</script>

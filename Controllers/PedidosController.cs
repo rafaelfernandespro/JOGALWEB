@@ -74,6 +74,28 @@ namespace inter.Controllers
                     new { id = pedidoId });
             }
 
+            // CANCELADO
+            // DEVOLVE ESTOQUE
+            if(pedido.StatusId != 5
+                && statusId == 5)
+            {
+                var itens = db.ItensPedido
+                    .Where(i => i.PedidoId == pedidoId)
+                    .ToList();
+
+                foreach(var item in itens)
+                {
+                    var produto = db.Produtos
+                        .FirstOrDefault(p =>
+                            p.Id == item.ProdutoId);
+
+                    if(produto != null)
+                    {
+                        produto.Qtd += item.Quantidade;
+                    }
+                }
+            }
+
             pedido.StatusId = statusId;
 
             db.SaveChanges();

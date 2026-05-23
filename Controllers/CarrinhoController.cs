@@ -26,6 +26,19 @@ namespace inter.Controllers
             return View(carrinho);
         }
 
+        // PARTIAL DO CARRINHO
+        public IActionResult CarrinhoPartial()
+        {
+            var carrinho =
+                HttpContext.Session
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+                ?? new List<CarrinhoItem>();
+
+            return PartialView(
+                "_CarrinhoPartial",
+                carrinho);
+        }
+
         // ADICIONAR PRODUTO
         [HttpPost]
         public IActionResult Adicionar(
@@ -50,7 +63,7 @@ namespace inter.Controllers
                 carrinho.FirstOrDefault(i =>
                     i.ProdutoId == produtoId);
 
-            // SE JÁ EXISTE
+            // JÁ EXISTE
             if(itemExistente != null)
             {
                 itemExistente.Quantidade += quantidade;
@@ -68,12 +81,14 @@ namespace inter.Controllers
             }
 
             HttpContext.Session
-                .SetObjectAsJson("Carrinho", carrinho);
+                .SetObjectAsJson(
+                    "Carrinho",
+                    carrinho);
 
             return Ok();
         }
 
-        // AUMENTAR QUANTIDADE
+        // AUMENTAR
         [HttpPost]
         public IActionResult Aumentar(int produtoId)
         {
@@ -91,43 +106,43 @@ namespace inter.Controllers
                 item.Quantidade++;
             }
 
-            HttpContext.Session.SetObjectAsJson(
-                "Carrinho",
-                carrinho);
+            HttpContext.Session
+                .SetObjectAsJson(
+                    "Carrinho",
+                    carrinho);
 
-           return Ok();
+            return Ok();
         }
 
-        // DIMINUIR QUANTIDADE
+        // DIMINUIR
         [HttpPost]
         public IActionResult Diminuir(int produtoId)
         {
             var carrinho =
                 HttpContext.Session
-                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+                ?? new List<CarrinhoItem>();
 
-            if(carrinho != null)
+            var item =
+                carrinho.FirstOrDefault(i =>
+                    i.ProdutoId == produtoId);
+
+            if(item != null)
             {
-                var item =
-                    carrinho.FirstOrDefault(i =>
-                        i.ProdutoId == produtoId);
+                item.Quantidade--;
 
-                if(item != null)
+                // REMOVE SE ZERAR
+                if(item.Quantidade <= 0)
                 {
-                    item.Quantidade--;
-
-                    // REMOVE SE CHEGAR EM 0
-                    if(item.Quantidade <= 0)
-                    {
-                        carrinho.Remove(item);
-                    }
+                    carrinho.Remove(item);
                 }
-
-                HttpContext.Session
-                    .SetObjectAsJson("Carrinho", carrinho);
             }
 
-            
+            HttpContext.Session
+                .SetObjectAsJson(
+                    "Carrinho",
+                    carrinho);
+
             return Ok();
         }
 
@@ -137,22 +152,22 @@ namespace inter.Controllers
         {
             var carrinho =
                 HttpContext.Session
-                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
+                .GetObjectFromJson<List<CarrinhoItem>>("Carrinho")
+                ?? new List<CarrinhoItem>();
 
-            if(carrinho != null)
+            var item =
+                carrinho.FirstOrDefault(i =>
+                    i.ProdutoId == produtoId);
+
+            if(item != null)
             {
-                var item =
-                    carrinho.FirstOrDefault(i =>
-                        i.ProdutoId == produtoId);
-
-                if(item != null)
-                {
-                    carrinho.Remove(item);
-                }
-
-                HttpContext.Session
-                    .SetObjectAsJson("Carrinho", carrinho);
+                carrinho.Remove(item);
             }
+
+            HttpContext.Session
+                .SetObjectAsJson(
+                    "Carrinho",
+                    carrinho);
 
             return Ok();
         }
@@ -166,12 +181,10 @@ namespace inter.Controllers
             return Ok();
         }
 
-
         // FINALIZAR PEDIDO
         [HttpPost]
         public IActionResult FinalizarPedido()
         {
-            // PEGAR CARRINHO
             var carrinho =
                 HttpContext.Session
                 .GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
@@ -183,17 +196,17 @@ namespace inter.Controllers
                     "Catalogo");
             }
 
-            // PEGAR CLIENTE LOGADO
+            // CLIENTE LOGADO
             int clienteId =
                 Convert.ToInt32(
                     HttpContext.Session.GetInt32("clienteId"));
 
-            // CALCULAR TOTAL
+            // TOTAL
             decimal total =
                 carrinho.Sum(i =>
                     i.Preco * i.Quantidade);
 
-
+            // VALIDAR ESTOQUE
             foreach(var item in carrinho)
             {
                 var produto =
@@ -222,7 +235,7 @@ namespace inter.Controllers
                 }
             }
 
-            // CRIAR PEDIDO
+            // CRIA PEDIDO
             Pedidos pedido = new Pedidos
             {
                 ClienteId = clienteId,
@@ -238,7 +251,7 @@ namespace inter.Controllers
 
             db.SaveChanges();
 
-            // CRIAR ITENS
+            // CRIA ITENS
             foreach(var item in carrinho)
             {
                 ItensPedido novoItem =
@@ -255,7 +268,7 @@ namespace inter.Controllers
 
                 db.ItensPedido.Add(novoItem);
 
-                // BAIXAR ESTOQUE
+                // BAIXA ESTOQUE
                 var produto =
                     db.Produtos
                     .FirstOrDefault(p =>
@@ -269,7 +282,7 @@ namespace inter.Controllers
 
             db.SaveChanges();
 
-            // LIMPAR CARRINHO
+            // LIMPA CARRINHO
             HttpContext.Session.Remove("Carrinho");
 
             TempData["PedidoSucesso"] = true;
