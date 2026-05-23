@@ -1,4 +1,3 @@
-
 @using Microsoft.AspNetCore.Http;
 
 @model inter.Models.ViewModels.DashboardViewModel
@@ -11,278 +10,158 @@
 <html>
 
 <head>
-
     <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Ajustes para travar a tela e fazer apenas o conteúdo rolar */
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Remove o scroll do corpo principal */
+        }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+        /* Define a altura da área útil descontando o tamanho aproximado da navbar */
+        .wrapper-conteudo {
+            height: calc(100vh - 66px); 
+        }
 
+        /* Faz apenas a coluna do conteúdo ter scroll se o conteúdo passar do tamanho */
+        .conteudo-rolavel {
+            height: 100%;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
 
     <!-- NAVBAR SUPERIOR -->
-    <nav class="navbar navbar-dark shadow"
-        style="background-color:#F15A24;">
-
+    <nav class="navbar navbar-dark shadow" style="background-color:#F15A24;">
         <div class="container-fluid">
-
-            <span class="navbar-brand fw-bold fs-3">
-                JOGAL
-            </span>
-
+            <a class="navbar-brand" href="/Dashboard">
+                <img src="/logo/logo.jpg" height="50" class="rounded-4">
+            </a> 
             <div class="d-flex align-items-center me-4">
-
                 <span class="text-white fw-semibold me-3">
-
-                    Olá,
-                    @Context.Session.GetString("usuario")
-
+                    Olá, @Context.Session.GetString("usuario")
                 </span>
-
-                <a href="/Login"
-                class="btn btn-light fw-bold">
-
-                    Sair
-
-                </a>
-
+                <a href="/Login" class="btn btn-light fw-bold">Sair</a>
             </div>
-
         </div>
-
     </nav>
 
-    <div class="container-fluid">
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="container-fluid wrapper-conteudo">
+        <div class="row h-100">
 
-        <div class="row">
-
-            <!-- SIDEBAR -->
-            <div class="col-2 p-0">
-
-                <div class="bg-dark text-white vh-100 p-3">
-
-                    <h4 class="fw-bold mb-4"
-                        style="color:#F7931E;">
-
-                        MENU
-
-                    </h4>
-
+            <!-- SIDEBAR (Agora ela se adapta perfeitamente à altura restante) -->
+            <div class="col-2 p-0 h-100">
+                <div class="bg-dark text-white h-100 p-3">
+                    <h4 class="fw-bold mb-4" style="color:#F7931E;">MENU</h4>
                     <ul class="nav flex-column">
-
                         <li class="nav-item mb-2">
-
-                            <a href="/Dashboard"
-                               class="nav-link text-white">
-
-                                Dashboard
-
-                            </a>
-
+                            <a href="/Dashboard" class="nav-link text-white">Dashboard</a>
                         </li>
-
                         <li class="nav-item mb-2">
-
-                            <a href="/Produtos"
-                               class="nav-link text-white">
-
-                                Estoque
-
-                            </a>
-
+                            <a href="/Produtos" class="nav-link text-white">Estoque</a>
                         </li>
-
                         <li class="nav-item mb-2">
-
-                            <a href="/Pedidos"
-                               class="nav-link text-white">
-
-                                Pedidos
-
-                            </a>
-
+                            <a href="/Pedidos" class="nav-link text-white">Pedidos</a>
                         </li>
-
-
                         <li class="nav-item mb-2">
-
-                            <a href="/Usuarios"
-                               class="nav-link text-white">
-
-                                Usuários
-
-                            </a>
-
+                            <a href="/Usuarios" class="nav-link text-white">Usuários</a>
                         </li>
-
                     </ul>
-
                 </div>
-
             </div>
 
-            <!-- CONTEÚDO -->
-            <div class="col-10 p-4">
+            <!-- CONTEÚDO (Este cara agora controla o próprio scroll) -->
+            <div class="col-10 p-4 conteudo-rolavel">
 
-                <h1 class="fw-bold mb-4">
-                    Dashboard
-                </h1>
+                <h1 class="fw-bold mb-4">Dashboard</h1>
 
                 <!-- CARDS -->
                 <div class="row">
-
                     <!-- PRODUTOS -->
                     <div class="col-md-4 mb-4">
-
                         <div class="card border-0 shadow">
-
                             <div class="card-body">
-
-                                <h5 class="text-muted">
-                                    Produtos
-                                </h5>
-
-                                <h1 class="fw-bold">
-                                    @Model.TotalProdutos
-                                </h1>
-
+                                <h5 class="text-muted">Produtos</h5>
+                                <h1 class="fw-bold">@Model.TotalProdutos</h1>
                             </div>
-
                         </div>
-
                     </div>
 
                     <!-- PEDIDOS -->
                     <div class="col-md-4 mb-4">
-
                         <div class="card border-0 shadow">
-
                             <div class="card-body">
-
-                                <h5 class="text-muted">
-                                    Pedidos
-                                </h5>
-
-                                <h1 class="fw-bold">
-                                    @Model.TotalPedidos
-                                </h1>
-
+                                <h5 class="text-muted">Pedidos</h5>
+                                <h1 class="fw-bold">@Model.TotalPedidos</h1>
                             </div>
-
                         </div>
-
                     </div>
 
                     <!-- CLIENTES -->
                     <div class="col-md-4 mb-4">
-
                         <div class="card border-0 shadow">
-
                             <div class="card-body">
-
-                                <h5 class="text-muted">
-                                    Clientes
-                                </h5>
-
-                                <h1 class="fw-bold">
-                                    @Model.TotalClientes
-                                </h1>
-
+                                <h5 class="text-muted">Clientes</h5>
+                                <h1 class="fw-bold">@Model.TotalClientes</h1>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- TABELA -->
-                <div class="card border-0 shadow mt-4">
-
+                <div class="card border-0 shadow mt-4 mb-4">
                     <div class="card-body">
-
-                        <h4 class="mb-4">
-                            Últimos Pedidos
-                        </h4>
+                        <h4 class="mb-4">Últimos Pedidos</h4>
 
                         @if (!Model.UltimosPedidos.Any())
                         {
                             <div class="alert alert-warning">
-
                                 Nenhum pedido encontrado.
-
                             </div>
                         }
                         else
                         {
                             <table class="table table-hover">
-
                                 <thead>
-
                                     <tr>
-
                                         <th>ID</th>
                                         <th>Cliente</th>
                                         <th>Total Itens</th>
                                         <th>Status</th>
                                         <th>Data</th>
-
                                     </tr>
-
                                 </thead>
-
                                 <tbody>
-
                                     @foreach(var pedido in Model.UltimosPedidos)
                                     {
                                         <tr>
-
-                                            <td>
-                                                @pedido.Id
-                                            </td>
-
-                                            <td>
-                                                @pedido.ClienteId
-                                            </td>
-
+                                            <td>@pedido.Id</td>
+                                            <td>@pedido.ClienteId</td>
                                             <td>
                                                 @(pedido.Itens != null
                                                     ? pedido.Itens.Sum(i => i.Quantidade)
                                                     : 0)
                                             </td>
-
-                                            <td>
-
-                                                @pedido.Status?.Descricao
-
-                                            </td>
-
-                                            <td>
-
-                                                @pedido.DataPedido.ToString("dd/MM/yyyy HH:mm")
-
-                                            </td>
-
+                                            <td>@pedido.Status?.Descricao</td>
+                                            <td>@pedido.DataPedido.ToString("dd/MM/yyyy HH:mm")</td>
                                         </tr>
                                     }
-
                                 </tbody>
-
                             </table>
                         }
-
                     </div>
-
                 </div>
 
             </div>
 
         </div>
-
     </div>
 
 </body>
-
 </html>
-```
