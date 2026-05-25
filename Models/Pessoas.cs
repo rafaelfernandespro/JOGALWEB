@@ -16,6 +16,9 @@ namespace inter.Models
         [Column("cpf")]
         public string Cpf { get; set; }
 
+        [Column("telefone")]
+        public string? Telefone { get; set; }
+
         [Column("endereco")]
         public string Endereco { get; set; }
 

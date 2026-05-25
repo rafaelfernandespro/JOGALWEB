@@ -4,7 +4,7 @@
     Layout = null;
 }
 
-@model inter.Models.Pessoas
+@model inter.Models.Pessoas?
 
 <!DOCTYPE html>
 <html>
@@ -149,6 +149,19 @@
                                        name="Numero"
                                        class="form-control"
                                        required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Telefone
+                                </label>
+
+                                <input type="text"
+                                    name="Telefone"
+                                    value="@Model.Telefone"
+                                    class="form-control">
 
                             </div>
 

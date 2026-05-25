@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using inter.Data;
+using inter.Models;
 
 namespace inter.Controllers
 {
@@ -12,38 +13,125 @@ namespace inter.Controllers
             _context = context;
         }
 
+        // TELA LOGIN
         public IActionResult Index()
         {
             return View();
         }
 
+        // LOGIN
         [HttpPost]
         public IActionResult Entrar(string email, string senha)
         {
-            var usuario = _context.Pessoas  // SELECT * FROM PESSOAS WHERE EMAIL == EMAIL AND SENHA == SENHA
+            var usuario = _context.Pessoas
                 .FirstOrDefault(u =>
                     u.Email == email &&
                     u.Senha == senha);
 
-            if (usuario == null)
+            if(usuario == null)
             {
                 ViewBag.Erro = "Login inválido";
+
                 return View("Index");
             }
 
-            HttpContext.Session.SetString("id",usuario.Id.ToString());
-            HttpContext.Session.SetString("usuario", usuario.Nome);
-            HttpContext.Session.SetString("tipo", usuario.Tipo.ToString());
-            
-            // ID DO CLIENTE
-            HttpContext.Session.SetInt32("clienteId",usuario.Id);
+            HttpContext.Session.SetString(
+                "id",
+                usuario.Id.ToString());
 
+            HttpContext.Session.SetString(
+                "usuario",
+                usuario.Nome);
+
+            HttpContext.Session.SetString(
+                "tipo",
+                usuario.Tipo.ToString());
+
+            // ID CLIENTE
+            HttpContext.Session.SetInt32(
+                "clienteId",
+                usuario.Id);
+
+            // ADMIN / FUNCIONÁRIO
             if(usuario.Tipo == 2 || usuario.Tipo == 3)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction(
+                    "Index",
+                    "Dashboard");
             }
 
-            return RedirectToAction("Index", "Catalogo");
+            // CLIENTE
+            return RedirectToAction(
+                "Index",
+                "Catalogo");
+        }
+
+        // TELA CADASTRO
+        [HttpGet]
+        public IActionResult Cadastro()
+        {
+            return View();
+        }
+
+       // CADASTRAR CLIENTE
+        [HttpPost]
+        public IActionResult Cadastro(
+            string nome,
+            string cpf,
+            string endereco,
+            string numero,
+            string email,
+            string senha,
+            string telefone)
+        {
+            // VERIFICA EMAIL
+            bool emailExiste =
+                _context.Pessoas.Any(p =>
+                    p.Email == email);
+
+            if(emailExiste)
+            {
+                ViewBag.Erro =
+                    "Este email já está cadastrado.";
+
+                return View();
+            }
+
+            // VERIFICA CPF
+            bool cpfExiste =
+                _context.Pessoas.Any(p =>
+                    p.Cpf == cpf);
+
+            if(cpfExiste)
+            {
+                ViewBag.Erro =
+                    "Este CPF já está cadastrado.";
+
+                return View();
+            }
+
+            Pessoas novaPessoa = new Pessoas
+            {
+                Nome = nome,
+                Cpf = cpf,
+                Endereco = endereco,
+                Numero = numero,
+                Email = email,
+                Senha = senha,
+                Telefone = telefone,
+
+                // CLIENTE
+                Tipo = 1
+            };
+
+            _context.Pessoas.Add(novaPessoa);
+
+            _context.SaveChanges();
+
+            TempData["Sucesso"] =
+                "Conta criada com sucesso.";
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -40,7 +40,7 @@ namespace inter.Controllers
             ViewBag.Tipos =
                 db.TipoPessoas.ToList();
 
-            return View();
+            return View(new Pessoas());
         }
 
         // SALVA USUÁRIO
@@ -56,12 +56,29 @@ namespace inter.Controllers
                 p.Tipo = 1;
             }
 
-            // EMAIL REPETIDO
-            var emailExiste = db.Pessoas
-                .FirstOrDefault(u =>
-                    u.Email == p.Email);
+            // TELEFONE REPETIDO
+            bool telefoneExiste =
+                db.Pessoas.Any(x =>
+                    x.Telefone != null &&
+                    x.Telefone == p.Telefone);
 
-            if(emailExiste != null)
+            if(telefoneExiste)
+            {
+                ViewBag.Erro =
+                    "Telefone já cadastrado.";
+
+                ViewBag.Tipos =
+                    db.TipoPessoas.ToList();
+
+                return View(p);
+            }
+
+            // EMAIL REPETIDO
+            bool emailExiste =
+                db.Pessoas.Any(x =>
+                    x.Email == p.Email);
+
+            if(emailExiste)
             {
                 ViewBag.Erro =
                     "Email já cadastrado.";
@@ -164,6 +181,39 @@ namespace inter.Controllers
                 p.Tipo = 1;
             }
 
+            // TELEFONE REPETIDO
+            bool telefoneExiste =
+                db.Pessoas.Any(x =>
+                    x.Telefone != null &&
+                    x.Telefone == p.Telefone &&
+                    x.Id != p.Id);
+
+            if(telefoneExiste)
+            {
+                TempData["Erro"] =
+                    "Telefone já cadastrado.";
+
+                return RedirectToAction(
+                    "Update",
+                    new { id = p.Id });
+            }
+
+            // EMAIL REPETIDO
+            bool emailExiste =
+                db.Pessoas.Any(x =>
+                    x.Email == p.Email &&
+                    x.Id != p.Id);
+
+            if(emailExiste)
+            {
+                TempData["Erro"] =
+                    "Email já cadastrado.";
+
+                return RedirectToAction(
+                    "Update",
+                    new { id = p.Id });
+            }
+
             // ATUALIZA CAMPOS
             usuarioBanco.Nome = System.Globalization
                 .CultureInfo
@@ -172,6 +222,7 @@ namespace inter.Controllers
                 .ToTitleCase(p.Nome.ToLower());
 
             usuarioBanco.Cpf = p.Cpf;
+            usuarioBanco.Telefone = p.Telefone;
             usuarioBanco.Endereco = p.Endereco;
             usuarioBanco.Numero = p.Numero;
             usuarioBanco.Email = p.Email;
