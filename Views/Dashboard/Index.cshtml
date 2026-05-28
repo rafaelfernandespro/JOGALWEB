@@ -46,7 +46,7 @@
                 <span class="text-white fw-semibold me-3">
                     Olá, @Context.Session.GetString("usuario")
                 </span>
-                <a href="/Login" class="btn btn-light fw-bold">Sair</a>
+                <a href="/Login" class="btn btn-dark fw-bold">Sair</a>
             </div>
         </div>
     </nav>
@@ -58,20 +58,45 @@
             <!-- SIDEBAR (Agora ela se adapta perfeitamente à altura restante) -->
             <div class="col-2 p-0 h-100">
                 <div class="bg-dark text-white h-100 p-3">
-                    <h4 class="fw-bold mb-4" style="color:#F7931E;">MENU</h4>
+                    <h4 class="fw-bold mb-4" style="color:#F7931E;">
+                        MENU
+                    </h4>
+
                     <ul class="nav flex-column">
+
                         <li class="nav-item mb-2">
-                            <a href="/Dashboard" class="nav-link text-white">Dashboard</a>
+
+                            <a href="/Dashboard"
+                                class="nav-link text-white fs-4 fw-bold rounded px-3 py-2">
+                                Dashboard
+                            </a>
+
                         </li>
+
                         <li class="nav-item mb-2">
-                            <a href="/Produtos" class="nav-link text-white">Estoque</a>
+
+                            <a href="/Produtos" class="nav-link text-white fs-4">
+                                Estoque
+                            </a>
+
                         </li>
+
                         <li class="nav-item mb-2">
-                            <a href="/Pedidos" class="nav-link text-white">Pedidos</a>
+
+                            <a href="/Pedidos" class="nav-link text-white fs-4">
+                                Pedidos
+                            </a>
+                            
                         </li>
+
                         <li class="nav-item mb-2">
-                            <a href="/Usuarios" class="nav-link text-white">Usuários</a>
+
+                            <a href="/Usuarios" class="nav-link text-white fs-4">
+                                Usuários
+                            </a>
+
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -83,21 +108,14 @@
 
                 <!-- CARDS -->
                 <div class="row">
-                    <!-- PRODUTOS -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow">
-                            <div class="card-body">
-                                <h5 class="text-muted">Produtos</h5>
-                                <h1 class="fw-bold">@Model.TotalProdutos</h1>
-                            </div>
-                        </div>
-                    </div>
+                   
 
                     <!-- PEDIDOS -->
                     <div class="col-md-4 mb-4">
                         <div class="card border-0 shadow">
-                            <div class="card-body">
-                                <h5 class="text-muted">Pedidos</h5>
+                            <div class="card-body"
+                            style="background-color: #e0ebfd;">
+                                <h5 class="text-muted">Pedidos Totais</h5>
                                 <h1 class="fw-bold">@Model.TotalPedidos</h1>
                             </div>
                         </div>
@@ -105,19 +123,32 @@
 
                     <!-- CLIENTES -->
                     <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow">
+                        <div class="card border-0 shadow"
+                        style="background-color: #e8f8ec;">
                             <div class="card-body">
-                                <h5 class="text-muted">Clientes</h5>
+                                <h5 class="text-muted">Clientes Totais</h5>
                                 <h1 class="fw-bold">@Model.TotalClientes</h1>
                             </div>
                         </div>
                     </div>
+
+                     <!-- PRODUTOS -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow"
+                        style="background-color: #fff1e6;">
+                            <div class="card-body">
+                                <h5 class="text-muted">Produtos Cadastrados</h5>
+                                <h1 class="fw-bold">@Model.TotalProdutos</h1>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- TABELA -->
+                <!-- ULTIMOS PEDIDOS -->
                 <div class="card border-0 shadow mt-4 mb-4">
                     <div class="card-body">
-                        <h4 class="mb-4">Últimos Pedidos</h4>
+                        <h4 class="mb-4">Últimos 5 Pedidos</h4>
 
                         @if (!Model.UltimosPedidos.Any())
                         {
@@ -148,7 +179,27 @@
                                                     ? pedido.Itens.Sum(i => i.Quantidade)
                                                     : 0)
                                             </td>
-                                            <td>@pedido.Status?.Descricao</td>
+
+                                            <td>
+                                                @{
+                                                    string corStatus = pedido.StatusId switch
+                                                    {
+                                                        1 => "bg-warning text-dark",
+                                                        2 => "bg-info text-dark",
+                                                        3 => "bg-primary",
+                                                        4 => "bg-success",
+                                                        5 => "bg-danger",
+                                                        _ => "bg-secondary"
+                                                    };
+                                                }
+
+                                                <span class="badge @corStatus">
+
+                                                    @pedido.Status?.Descricao
+
+                                                </span>
+                                            </td>
+
                                             <td>@pedido.DataPedido.ToString("dd/MM/yyyy HH:mm")</td>
                                         </tr>
                                     }
@@ -156,6 +207,68 @@
                             </table>
                         }
                     </div>
+                </div>
+
+                <!-- ÚLTIMOS CLIENTES -->
+                <div class="card border-0 shadow mb-4">
+
+                    <div class="card-body">
+
+                        <h4 class="mb-4">
+
+                            Últimos 5 Clientes
+
+                        </h4>
+
+                        @if(!Model.UltimosClientes.Any())
+                        {
+                            <div class="alert alert-warning">
+
+                                Nenhum cliente encontrado.
+
+                            </div>
+                        }
+                        else
+                        {
+                            <table class="table table-hover">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Telefone</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    @foreach(var cliente in Model.UltimosClientes)
+                                    {
+                                        <tr>
+
+                                            <td>@cliente.Id</td>
+
+                                            <td>@cliente.Nome</td>
+
+                                            <td>@cliente.Email</td>
+
+                                            <td>@cliente.Telefone</td>
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        }
+
+                    </div>
+
                 </div>
 
             </div>

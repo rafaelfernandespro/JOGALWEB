@@ -42,7 +42,7 @@
                 </span>
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -78,7 +78,19 @@
 
                     </div>
 
-                    <span class="badge bg-dark fs-6">
+                    @{
+                        string corStatus = Model.StatusId switch
+                        {
+                            1 => "bg-warning text-dark",
+                            2 => "bg-info text-dark",
+                            3 => "bg-primary",
+                            4 => "bg-success",
+                            5 => "bg-danger",
+                            _ => "bg-secondary"
+                        };
+                    }
+
+                    <span class="badge fs-6 @corStatus">
 
                         @Model.Status?.Descricao
 

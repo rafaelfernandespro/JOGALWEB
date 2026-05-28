@@ -15,10 +15,12 @@ namespace inter.Controllers
             this.db = db;
         }
 
-        
         public ActionResult Index()
         {
-            var produtos = db.Produtos.ToList();
+            var produtos = db.Produtos
+                .OrderByDescending(p => p.Ativo)
+                .ThenBy(p => p.Id)
+                .ToList();
 
             foreach(var produto in produtos)
             {
@@ -56,13 +58,13 @@ namespace inter.Controllers
                 .ToString()
                 .Replace(".", ",")
             );
-            
+
             var produtoExistente = db.Produtos
                 .FirstOrDefault(prod =>
                     prod.Nome.ToLower() == p.Nome.ToLower()
                     && prod.TipoId == p.TipoId);
 
-            // SE JÁ EXISTIR
+            // JÁ EXISTE
             if(produtoExistente != null)
             {
                 ViewBag.Erro =
@@ -73,6 +75,16 @@ namespace inter.Controllers
                 return View(p);
             }
 
+            // QUANTIDADE INVÁLIDA
+            if(p.Qtd < 0)
+            {
+                ViewBag.Erro =
+                    "Quantidade inválida.";
+
+                ViewBag.Tipos = db.Tipos.ToList();
+
+                return View(p);
+            }
 
             // SALVAR IMAGEM
             if(arquivoImagem != null
@@ -98,7 +110,6 @@ namespace inter.Controllers
                 p.Imagem = nomeArquivo;
             }
 
-            // SE NÃO EXISTIR
             db.Produtos.Add(p);
 
             db.SaveChanges();
@@ -106,16 +117,49 @@ namespace inter.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Delete(int id)
+        public IActionResult Inativar(int id)
         {
-            var task = db.Produtos.Single(p => p.Id == id); // LinQ
-            db.Produtos.Remove(task); // ~ DELETE FROM Produtos WHERE Id = id
+            var produto =
+                db.Produtos
+                .FirstOrDefault(p => p.Id == id);
+
+            if(produto == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            produto.Ativo = false;
+
             db.SaveChanges();
+
+            TempData["Sucesso"] =
+                "Produto desativado com sucesso.";
 
             return RedirectToAction("Index");
         }
 
-        //ABRE PARA UPDATE
+        public IActionResult Ativar(int id)
+        {
+            var produto =
+                db.Produtos
+                .FirstOrDefault(p => p.Id == id);
+
+            if(produto == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            produto.Ativo = true;
+
+            db.SaveChanges();
+
+            TempData["Sucesso"] =
+                "Produto ativado com sucesso.";
+
+            return RedirectToAction("Index");
+        }
+
+        // ABRE UPDATE
         [HttpGet]
         public ActionResult Update(int id)
         {
@@ -128,7 +172,7 @@ namespace inter.Controllers
             return View(produto);
         }
 
-        //SALVA O UPDATE
+        // SALVA UPDATE
         [HttpPost]
         public ActionResult Update(
             Produtos p,
@@ -145,8 +189,22 @@ namespace inter.Controllers
                 .Replace(".", ",")
             );
 
+            // QUANTIDADE INVÁLIDA
+            if(p.Qtd < 0)
+            {
+                ViewBag.Erro =
+                    "Quantidade inválida.";
+
+                ViewBag.Tipos = db.Tipos.ToList();
+
+                return View(p);
+            }
+
             var produtoBanco =
                 db.Produtos.Single(prod => prod.Id == p.Id);
+
+            // MANTÉM STATUS
+            p.Ativo = produtoBanco.Ativo;
 
             // NOVA IMAGEM
             if(arquivoImagem != null
@@ -193,12 +251,13 @@ namespace inter.Controllers
                 p.Imagem = produtoBanco.Imagem;
             }
 
-            db.Entry(produtoBanco).CurrentValues.SetValues(p);
+            db.Entry(produtoBanco)
+                .CurrentValues
+                .SetValues(p);
 
             db.SaveChanges();
 
             return RedirectToAction("Index");
         }
-
     }
 }

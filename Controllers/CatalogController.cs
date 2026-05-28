@@ -12,11 +12,43 @@ namespace inter.Controllers
             this.db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(
+            string busca,
+            int? tipoId)
         {
-            var produtos = db.Produtos.ToList();
+            var produtos =
+                db.Produtos
+                .Where(p => p.Ativo)
+                .AsQueryable();
 
-            return View(produtos);
+            // PESQUISA
+            if(!string.IsNullOrEmpty(busca))
+            {
+                produtos =
+                    produtos.Where(p =>
+                        p.Nome.Contains(busca));
+            }
+
+            // FILTRO CATEGORIA
+            if(tipoId.HasValue && tipoId > 0)
+            {
+                produtos =
+                    produtos.Where(p =>
+                        p.TipoId == tipoId);
+            }
+
+            // MANDAR TIPOS PRA VIEW
+            ViewBag.Tipos =
+                db.Tipos.ToList();
+
+            ViewBag.Busca =
+                busca;
+
+            ViewBag.TipoSelecionado =
+                tipoId;
+
+            return View(
+                produtos.ToList());
         }
     }
 }

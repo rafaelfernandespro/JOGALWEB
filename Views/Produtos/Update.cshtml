@@ -67,6 +67,8 @@
 
 <body class="bg-light">
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- NAVBAR -->
     <nav class="navbar navbar-dark shadow"
          style="background-color:#F15A24;">
@@ -91,7 +93,7 @@
                 </span>
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -134,8 +136,11 @@
                             Editar Produto
                         </h2>
 
-                        <form method="post"
-                              enctype="multipart/form-data">
+                        <form id="formProduto"
+                        method="post"
+                        enctype="multipart/form-data">
+
+                            <input type="hidden" asp-for="Ativo"/>
 
                             <input type="hidden"
                                    name="Id"
@@ -185,10 +190,13 @@
                                         </label>
 
                                         <input type="number"
-                                               name="Qtd"
-                                               value="@Model.Qtd"
-                                               class="form-control"
-                                               required>
+                                            name="Qtd"
+                                            value="@Model.Qtd"
+                                            class="form-control"
+                                            min="0"
+                                            oninput="this.value =
+                                                this.value.replace('-', '')"
+                                            required>
 
                                     </div>
 
@@ -282,14 +290,6 @@
 
                             <hr class="my-4" />
 
-                            <button type="submit"
-                                    class="btn text-white fw-bold"
-                                    style="background-color:#F15A24;">
-
-                                Salvar Alterações
-
-                            </button>
-
                             <a href="/Produtos"
                                class="btn btn-secondary">
 
@@ -297,9 +297,75 @@
 
                             </a>
 
+                            <button type="button"
+                                    class="btn btn-success text-white fw-bold"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalSalvar">
+
+                                Salvar Alterações
+
+                            </button>
+
                         </form>
 
                     </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade"
+        id="modalSalvar"
+        tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content border-0 shadow">
+
+                <div class="modal-header"
+                    style="background-color:#F15A24;">
+
+                    <h5 class="modal-title text-white fw-bold">
+
+                        Confirmar Alterações
+
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    Deseja realmente salvar as alterações deste produto?
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            form="formProduto"
+                            class="btn btn-success">
+
+                        Confirmar
+
+                    </button>
 
                 </div>
 
@@ -344,6 +410,24 @@
 
                 reader.readAsDataURL(arquivo);
             }
+        });
+
+    </script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () =>
+        {
+            const form =
+                document.querySelector("form");
+
+            form.addEventListener("keydown", function(e)
+            {
+                if(e.key === "Enter")
+                {
+                    e.preventDefault();
+                }
+            });
         });
 
     </script>

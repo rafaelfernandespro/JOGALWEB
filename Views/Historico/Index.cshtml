@@ -69,7 +69,7 @@
 
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -123,6 +123,38 @@
                         <strong class="fs-4">
 
                             @Model.Count(p => p.StatusId == 1)
+
+                        </strong>
+
+                    </div>
+
+                    <div class="bg-info bg-opacity-25 shadow-sm rounded-4 px-4 py-3">
+
+                        <span class="text-muted d-block">
+
+                            Preparando
+
+                        </span>
+
+                        <strong class="fs-4">
+
+                            @Model.Count(p => p.StatusId == 2)
+
+                        </strong>
+
+                    </div>
+
+                    <div class="bg-primary bg-opacity-25 shadow-sm rounded-4 px-4 py-3 text-dark">
+
+                        <span class="d-block">
+
+                            Em entrega
+
+                        </span>
+
+                        <strong class="fs-4">
+
+                            @Model.Count(p => p.StatusId == 3)
 
                         </strong>
 
@@ -279,6 +311,10 @@
 
                             <option value="preparando">
                                 Preparando
+                            </option>
+
+                            <option value="saiu para entrega">
+                                Saiu para entrega
                             </option>
 
                             <option value="entregue">
@@ -443,12 +479,17 @@
 
                                     </button>
 
-                                    <a href="/Historico/Cancelar/@pedido.Id"
-                                       class="btn btn-danger">
+                                    <form method="post"
+                                        action="/Historico/Cancelar/@pedido.Id">
 
-                                        Cancelar Pedido
+                                        <button type="submit"
+                                                class="btn btn-danger">
 
-                                    </a>
+                                            Cancelar Pedido
+
+                                        </button>
+
+                                    </form>
 
                                 </div>
 

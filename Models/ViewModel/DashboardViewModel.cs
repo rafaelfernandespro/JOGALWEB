@@ -11,5 +11,7 @@ namespace inter.Models.ViewModels
         public int TotalClientes { get; set; }
 
         public List<Pedidos> UltimosPedidos { get; set; }
+
+        public List<Pessoas> UltimosClientes { get; set; }
     }
 }

@@ -91,7 +91,7 @@
                 </span>
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -143,8 +143,10 @@
                             </div>
                         }
 
-                        <form method="post"
-                              enctype="multipart/form-data">
+                        <form id="formProduto"
+                        method="post"
+                        enctype="multipart/form-data">
+
 
                             <div class="row">
 
@@ -184,9 +186,12 @@
                                         </label>
 
                                         <input type="number"
-                                               name="Qtd"
-                                               class="form-control"
-                                               required>
+                                            name="Qtd"
+                                            class="form-control"
+                                            min="0"
+                                            oninput="this.value =
+                                                this.value.replace('-', '')"
+                                            required>
 
                                     </div>
 
@@ -259,6 +264,13 @@
 
                             <hr class="my-4" />
 
+                            <a href="/Produtos"
+                               class="btn btn-secondary">
+
+                                Voltar
+
+                            </a>
+
                             <button type="submit"
                                     class="btn text-white fw-bold"
                                     style="background-color:#F15A24;">
@@ -267,12 +279,7 @@
 
                             </button>
 
-                            <a href="/Produtos"
-                               class="btn btn-secondary">
-
-                                Voltar
-
-                            </a>
+                            
 
                         </form>
 

@@ -31,6 +31,12 @@ namespace inter.Controllers
                                 .OrderByDescending(p => p.Id)
                                 .Take(5)
                                 .ToList();
+            
+            vm.UltimosClientes = db.Pessoas
+                                .Where(p => p.Tipo == 1)
+                                .OrderByDescending(p => p.Id)
+                                .Take(5)
+                                .ToList();
 
             return View(vm);
         }

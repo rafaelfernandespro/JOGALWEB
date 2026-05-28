@@ -53,41 +53,52 @@ namespace inter.Controllers
         }
 
         // CANCELAR
+        [HttpPost]
         public IActionResult Cancelar(int id)
         {
-            var pedido =
-                db.Pedidos
+            var clienteId =
+                HttpContext.Session.GetInt32("clienteId");
+
+            if(clienteId == null)
+            {
+                TempData["Erro"] =
+                    "Sessão expirada.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Login");
+            }
+
+            var pedido = db.Pedidos
+                .Include(p => p.Itens)
                 .FirstOrDefault(p =>
-                    p.Id == id);
+                    p.Id == id
+                    && p.ClienteId == clienteId);
 
             if(pedido == null)
             {
+                TempData["Erro"] =
+                    "Pedido não encontrado.";
+
                 return RedirectToAction("Index");
             }
 
-            // SOMENTE PENDENTE
+            // APENAS PENDENTE
             if(pedido.StatusId != 1)
             {
                 TempData["Erro"] =
-                    "Esse pedido não pode mais ser cancelado.";
+                    "Apenas pedidos pendentes podem ser cancelados.";
 
                 return RedirectToAction("Index");
             }
 
-            // STATUS CANCELADO
-            TempData["PedidoCancelado"] = true;
+            // CANCELA
+            pedido.StatusId = 5;
 
-            // DEVOLVER ESTOQUE
-            var itens =
-                db.ItensPedido
-                .Where(i =>
-                    i.PedidoId == pedido.Id)
-                .ToList();
-
-            foreach(var item in itens)
+            // DEVOLVE ESTOQUE
+            foreach(var item in pedido.Itens)
             {
-                var produto =
-                    db.Produtos
+                var produto = db.Produtos
                     .FirstOrDefault(p =>
                         p.Id == item.ProdutoId);
 
@@ -99,8 +110,7 @@ namespace inter.Controllers
 
             db.SaveChanges();
 
-            TempData["Sucesso"] =
-                "Pedido cancelado.";
+            TempData["PedidoCancelado"] = true;
 
             return RedirectToAction("Index");
         }

@@ -45,6 +45,13 @@ namespace inter.Controllers
             int produtoId,
             int quantidade)
         {
+            // BLOQUEIA NEGATIVO/ZERO
+            if(quantidade < 1)
+            {
+                return BadRequest(
+                    "Quantidade inválida.");
+            }
+
             var produto =
                 db.Produtos
                 .FirstOrDefault(p => p.Id == produtoId);
@@ -52,6 +59,13 @@ namespace inter.Controllers
             if(produto == null)
             {
                 return NotFound();
+            }
+
+            // BLOQUEIA ACIMA DO ESTOQUE
+            if(quantidade > produto.Qtd)
+            {
+                return BadRequest(
+                    "Quantidade acima do estoque.");
             }
 
             var carrinho =
@@ -66,6 +80,14 @@ namespace inter.Controllers
             // JÁ EXISTE
             if(itemExistente != null)
             {
+                // EVITA PASSAR DO ESTOQUE
+                if(itemExistente.Quantidade + quantidade
+                    > produto.Qtd)
+                {
+                    return BadRequest(
+                        "Quantidade acima do estoque.");
+                }
+
                 itemExistente.Quantidade += quantidade;
             }
             else

@@ -139,7 +139,7 @@
             <div class="d-flex align-items-center">
 
                 <!-- CARRINHO -->
-                <button class="btn btn-light position-relative me-4"
+                <button class="btn btn-dark position-relative me-4"
                         data-bs-toggle="offcanvas"
                         data-bs-target="#carrinhoCanvas">
 
@@ -163,7 +163,7 @@
                 </span>
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -196,7 +196,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Catalogo"
-                               class="nav-link text-white fw-bold">
+                               class="nav-link text-white fs-4 fw-bold">
 
                                 Catálogo
 
@@ -207,7 +207,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Historico"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
 
                                 Meus Pedidos
 
@@ -218,7 +218,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Perfil"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
 
                                 Meu Perfil
 
@@ -268,6 +268,61 @@
 
                     </div>
 
+                    <form method="get"
+                        class="card border-0 shadow-sm p-3 mb-4">
+
+                        <div class="row g-3">
+
+                            <!-- PESQUISA -->
+                            <div class="col-md-5">
+
+                                <input type="text"
+                                        id="barraPesquisa"
+                                        class="form-control"
+                                        placeholder="Pesquisar produto...">
+
+                            </div>
+
+                            <!-- CATEGORIA -->
+                            <div class="col-md-5">
+
+                                <select id="filtroCategoria"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Todas as categorias
+                                    </option>
+
+                                    @foreach(var tipo in ViewBag.Tipos)
+                                    {
+                                        if(ViewBag.TipoSelecionado != null
+                                            && ViewBag.TipoSelecionado == tipo.Id)
+                                        {
+                                            <option value="@tipo.Id"
+                                                    selected>
+
+                                                @tipo.Descricao
+
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@tipo.Id">
+
+                                                @tipo.Descricao
+
+                                            </option>
+                                        }
+                                    }
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
                 </div>
 
                 @if (!Model.Any())
@@ -284,7 +339,9 @@
 
                         @foreach(var produto in Model)
                         {
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4 produto-card-item"
+                                data-nome="@produto.Nome.ToLower()"
+                                data-tipo="@produto.TipoId">
 
                                 <div class="card produto-card border-0 shadow h-100">
 
@@ -387,11 +444,18 @@
                                                 </button>
 
                                                 <input type="number"
-                                                       id="quantidade_@produto.Id"
-                                                       value="1"
-                                                       min="1"
-                                                       class="form-control text-center"
-                                                       style="width:80px;">
+                                                id="quantidade_@produto.Id"
+                                                value="1"
+                                                min="1"
+                                                oninput="
+                                                        this.value =
+                                                        this.value.replace('-', '');
+                                                        if(this.value < 1 && this.value != '')
+                                                        {
+                                                            this.value = 1;
+                                                        }";
+                                                class="form-control text-center";
+                                                style="width:80px;">
 
                                                 <button class="btn btn-outline-secondary quantidade-btn"
                                                         onclick="aumentarQuantidade(@produto.Id)">
@@ -540,9 +604,23 @@
                     "quantidade_" + id);
 
             let quantidade =
-                input.value;
+                parseInt(input.value);
 
-            await fetch("/Carrinho/Adicionar",
+            // VALIDAÇÃO
+            if(isNaN(quantidade) || quantidade < 1)
+            {
+                alert(
+                    "Digite uma quantidade válida.");
+
+                input.value = "";
+
+                input.focus();
+
+                return;
+            }
+
+            const resposta =
+                await fetch("/Carrinho/Adicionar",
             {
                 method: "POST",
 
@@ -555,6 +633,17 @@
                 body:
                     `produtoId=${id}&quantidade=${quantidade}`
             });
+
+            // ERRO DO BACK-END
+            if(!resposta.ok)
+            {
+                const erro =
+                    await resposta.text();
+
+                alert(erro);
+
+                return;
+            }
 
             // ATUALIZA CARRINHO
             await atualizarCarrinho();
@@ -637,6 +726,65 @@
         document.addEventListener(
             "DOMContentLoaded",
             atualizarCarrinho);
+
+
+        document.addEventListener("DOMContentLoaded", () =>
+        {
+            atualizarCarrinho();
+
+            const barraPesquisa =
+                document.getElementById(
+                    "barraPesquisa");
+
+            const filtroCategoria =
+                document.getElementById(
+                    "filtroCategoria");
+
+            barraPesquisa.addEventListener(
+                "input",
+                filtrar);
+
+            filtroCategoria.addEventListener(
+                "change",
+                filtrar);
+
+            function filtrar()
+            {
+                let texto =
+                    barraPesquisa.value
+                    .trim()
+                    .toLowerCase();
+
+                let categoria =
+                    filtroCategoria.value;
+
+                let produtos =
+                    document.querySelectorAll(
+                        ".produto-card-item");
+
+                produtos.forEach(produto =>
+                {
+                    let nome =
+                        produto.dataset.nome;
+
+                    let tipo =
+                        produto.dataset.tipo;
+
+                    let mostrar =
+                        nome.includes(texto)
+                        &&
+                        (
+                            categoria === ""
+                            || tipo === categoria
+                        );
+
+                    produto.style.display =
+                        mostrar
+                        ? ""
+                        : "none";
+                });
+            }
+        });
 
     </script>
 

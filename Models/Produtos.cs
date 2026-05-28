@@ -29,6 +29,8 @@ namespace inter.Models
         [NotMapped]
         public string NomeTipo { get; set; }
 
+        [Column("ativo")]
+        public bool Ativo { get; set; }
     }
 
 
