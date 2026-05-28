@@ -47,7 +47,7 @@
                 </span>
 
                 <a href="/Login"
-                class="btn btn-light fw-bold">
+                class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -106,7 +106,11 @@
                                        name="Nome"
                                        value="@Model.Nome"
                                        class="form-control"
-                                       required>
+                                       oninput="
+                                                this.value =
+                                                this.value.replace(/[0-9]/g, '')
+                                        "
+                                        required>
 
                             </div>
 
@@ -138,7 +142,11 @@
                                        name="Endereco"
                                        value="@Model.Endereco"
                                        class="form-control"
-                                       required>
+                                       oninput="
+                                                this.value =
+                                                this.value.replace(/[0-9]/g, '')
+                                        "
+                                        required>
 
                             </div>
 
@@ -165,7 +173,13 @@
                             <input type="text"
                                 name="Telefone"
                                 value="@Model.Telefone"
-                                class="form-control">
+                                class="form-control"
+                                maxlength="11"
+                                        oninput="
+                                                this.value =
+                                                this.value.replace(/\D/g, '')
+                                        "
+                                        required>
 
                         </div>
 
@@ -251,9 +265,16 @@
                                 </select>
                             </div>
 
+                            <a href="/Usuarios"
+                               class="btn btn-dark fw-bold">
+
+                                Voltar
+
+                            </a>
+
+
                             <button type="button"
-                                    class="btn text-white fw-bold"
-                                    style="background-color:#F15A24;"
+                                    class="btn btn-success text-white fw-bold"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalSalvar">
 
@@ -261,13 +282,7 @@
 
                             </button>
 
-                            <a href="/Usuarios"
-                               class="btn btn-secondary">
-
-                                Voltar
-
-                            </a>
-
+                            
                             <!-- MODAL CONFIRMAÇÃO -->
                             <div class="modal fade"
                                 id="modalSalvar"

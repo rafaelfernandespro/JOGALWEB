@@ -96,6 +96,12 @@ namespace inter.Controllers
                 }
             }
 
+            // DATA FINAL
+            if(statusId == 4 || statusId == 5)
+            {
+                pedido.DataFinal = DateTime.Now;
+            }
+
             pedido.StatusId = statusId;
 
             db.SaveChanges();

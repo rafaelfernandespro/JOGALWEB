@@ -91,7 +91,7 @@
                 </span>
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -170,6 +170,8 @@
                 </div>
 
             </div>
+
+            
 
             <!-- CONTEÚDO -->
             <div class="col-10 p-4">
@@ -287,23 +289,38 @@
                             </div>
                         }
 
+                        @{
+                            int qtdTotal =
+                                Model.Itens.Sum(i => i.Quantidade);
+                        }
+
                         <hr class="my-4" />
 
                         <!-- TOTAL -->
                         <div class="d-flex justify-content-between align-items-center">
 
-                            <h3 class="fw-bold">
+                            <div>
 
-                                Total do Pedido
+                                <h3 class="fw-bold mb-1">
 
-                            </h3>
+                                    Total do Pedido
 
-                            <h2 class="fw-bold"
+                                </h3>
+
+                                <span class="text-muted fs-5">
+
+                                    Quantidade: @qtdTotal
+
+                                </span>
+
+                            </div>
+
+                            <h1 class="fw-bold mb-0"
                                 style="color:#F15A24;">
 
                                 R$ @Model.Total
 
-                            </h2>
+                            </h1>
 
                         </div>
 

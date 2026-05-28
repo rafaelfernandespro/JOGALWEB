@@ -17,6 +17,9 @@ namespace inter.Models
         [Column("data_pedido")]
         public DateTime DataPedido { get; set; }
 
+        [Column("data_final")]
+        public DateTime? DataFinal { get; set; }
+
         [Column("total")]
         public decimal Total { get; set; }
 
@@ -28,5 +31,7 @@ namespace inter.Models
 
         [ForeignKey("StatusId")]
         public StatusPedido? Status { get; set; }
+
+        
     }
 }

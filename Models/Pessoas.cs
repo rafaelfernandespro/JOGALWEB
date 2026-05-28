@@ -33,6 +33,9 @@ namespace inter.Models
 
         [Column("tipo")]
         public int Tipo { get; set; }
+
+        [Column("ativo")]
+        public bool Ativo { get; set; }
     }
 }
 

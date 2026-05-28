@@ -29,6 +29,10 @@ namespace inter.Controllers
                     usuarios.Where(u => u.Tipo == 1);
             }
 
+            usuarios =
+                usuarios.OrderByDescending(u => u.Ativo)
+                        .ThenBy(u => u.Id);
+
             return View(
                 usuarios.ToList());
         }
@@ -95,6 +99,8 @@ namespace inter.Controllers
                 .TextInfo
                 .ToTitleCase(
                     p.Nome.ToLower());
+            
+            p.Ativo = true;
 
             db.Pessoas.Add(p);
 
@@ -266,12 +272,9 @@ namespace inter.Controllers
             return RedirectToAction("Index");
         }
 
-        // DELETE
-        public IActionResult Delete(int id)
+        //INATIVAR
+        public IActionResult Inativar(int id)
         {
-            string tipo =
-                HttpContext.Session.GetString("tipo");
-
             var usuario = db.Pessoas
                 .FirstOrDefault(u => u.Id == id);
 
@@ -280,34 +283,33 @@ namespace inter.Controllers
                 return RedirectToAction("Index");
             }
 
-            // FUNCIONÁRIO NÃO REMOVE ADMIN/FUNC
-            if(tipo == "3"
-                && usuario.Tipo != 1)
+            usuario.Ativo = false;
+
+            db.SaveChanges();
+
+            TempData["Sucesso"] =
+                "Usuário inativado com sucesso.";
+
+            return RedirectToAction("Index");
+        }
+
+        //ATIVAR
+        public IActionResult Ativar(int id)
+        {
+            var usuario = db.Pessoas
+                .FirstOrDefault(u => u.Id == id);
+
+            if(usuario == null)
             {
                 return RedirectToAction("Index");
             }
 
-            // REMOVE CLIENTE
-            var cliente = db.Clientes
-                .FirstOrDefault(c => c.Id == id);
-
-            if(cliente != null)
-            {
-                db.Clientes.Remove(cliente);
-            }
-
-            // REMOVE OPERADOR
-            var operador = db.Operadores
-                .FirstOrDefault(o => o.Id == id);
-
-            if(operador != null)
-            {
-                db.Operadores.Remove(operador);
-            }
-
-            db.Pessoas.Remove(usuario);
+            usuario.Ativo = true;
 
             db.SaveChanges();
+
+            TempData["Sucesso"] =
+                "Usuário ativado com sucesso.";
 
             return RedirectToAction("Index");
         }

@@ -11,7 +11,9 @@
 
 <head>
 
-    <title>Usuários</title>
+    <title>@(Context.Session.GetString("tipo") == "3"
+    ? "Clientes"
+    : "Usuários")</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           rel="stylesheet">
@@ -19,19 +21,20 @@
 </head>
 
 <body class="bg-light">
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- NAVBAR -->
     <nav class="navbar navbar-dark shadow"
-        style="background-color:#F15A24;">
+         style="background-color:#F15A24;">
 
         <div class="container-fluid">
 
             <a class="navbar-brand" href="/Dashboard">
 
                 <img src="/logo/logo.jpg"
-                    height="50"
-                    class="rounded-4">
+                     height="50"
+                     class="rounded-4">
 
             </a>
 
@@ -45,7 +48,7 @@
                 </span>
 
                 <a href="/Login"
-                class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -59,12 +62,12 @@
 
     <div class="container-fluid p-0">
 
-    <div class="row g-0 align-items-stretch">
+        <div class="row g-0 align-items-stretch">
 
-        <!-- SIDEBAR -->
-        <div class="col-2 p-0">
+            <!-- SIDEBAR -->
+            <div class="col-2 p-0">
 
-            <div class="bg-dark text-white min-vh-100 h-100 p-3">
+                <div class="bg-dark text-white min-vh-100 h-100 p-3">
 
                     <h4 class="fw-bold mb-4"
                         style="color:#F7931E;">
@@ -76,32 +79,49 @@
                     <ul class="nav flex-column">
 
                         <li class="nav-item mb-2">
+
                             <a href="/Dashboard"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
+
                                 Dashboard
+
                             </a>
+
                         </li>
 
                         <li class="nav-item mb-2">
+
                             <a href="/Produtos"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
+
                                 Estoque
+
                             </a>
+
                         </li>
 
                         <li class="nav-item mb-2">
+
                             <a href="/Pedidos"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
+
                                 Pedidos
+
                             </a>
+
                         </li>
 
-
                         <li class="nav-item mb-2">
+
                             <a href="/Usuarios"
-                               class="nav-link text-white fw-bold">
-                                Usuários
+                               class="nav-link text-white fs-4 fw-bold">
+
+                                @(Context.Session.GetString("tipo") == "3"
+                                ? "Clientes"
+                                : "Usuários")
+
                             </a>
+
                         </li>
 
                     </ul>
@@ -119,20 +139,26 @@
                     <div>
 
                         <h1 class="fw-bold">
-                            Usuários
+                            @(Context.Session.GetString("tipo") == "3"
+                            ? "Clientes"
+                            : "Usuários")
                         </h1>
 
                         <p class="text-muted">
-                            Gerenciamento de usuários do sistema
+                            @(Context.Session.GetString("tipo") == "3"
+                            ? "Gerenciamento de clientes"
+                            : "Gerenciamento de usuários do sistema")
                         </p>
 
                     </div>
 
                     <a href="/Usuarios/Create"
                        class="btn text-white fw-bold"
-                       style="background-color:#F15A24;">
+                       style="background-color:#000000;">
 
-                        Novo Usuário
+                        @(Context.Session.GetString("tipo") == "3"
+                        ? "Novo Cliente"
+                        : "Novo Usuário")
 
                     </a>
 
@@ -143,20 +169,34 @@
 
                     <div class="card-body">
 
-                        <div class="row">
+                        <div class="row g-3">
 
+                            <!-- PESQUISA -->
                             <div class="col-md-6">
+
+                                <label class="form-label fw-semibold">
+
+                                    Pesquisar usuário
+
+                                </label>
 
                                 <input type="text"
                                        id="pesquisa"
                                        class="form-control"
-                                       placeholder="Pesquisar usuário...">
+                                       placeholder="Nome ou email...">
 
                             </div>
 
+                            <!-- FILTRO TIPO -->
                             @if(Context.Session.GetString("tipo") == "2")
                             {
                                 <div class="col-md-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Tipo de usuário
+
+                                    </label>
 
                                     <select id="filtroTipo"
                                             class="form-select">
@@ -175,6 +215,33 @@
 
                                         <option value="FUNCIONÁRIO">
                                             Funcionário
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Status
+
+                                    </label>
+
+                                    <select id="filtroStatus"
+                                            class="form-select">
+
+                                        <option value="">
+                                            Todos os status
+                                        </option>
+
+                                        <option value="ativo">
+                                            Ativo
+                                        </option>
+
+                                        <option value="inativo">
+                                            Inativo
                                         </option>
 
                                     </select>
@@ -213,111 +280,154 @@
                                         <th>ID</th>
                                         <th>Nome</th>
                                         <th>Email</th>
-                                        <th>Tipo</th>
+                                        @if(Context.Session.GetString("tipo") == "2")
+                                        {
+                                            <th>Tipo</th>
+                                        }
+                                        <th>Status</th>
                                         <th>Ações</th>
 
                                     </tr>
 
                                 </thead>
 
-                                <tbody>
-
-                                    @foreach(var item in Model)
-                                    {
-                                        string tipo = item.Tipo switch
+                               <tbody>
+                                        @foreach(var item in Model)
                                         {
-                                            1 => "CLIENTE",
-                                            2 => "OPERADOR",
-                                            3 => "FUNCIONÁRIO",
-                                            _ => "DESCONHECIDO"
-                                        };
-                                        <tr>
+                                            string tipo = item.Tipo switch
+                                            {
+                                                1 => "CLIENTE",
+                                                2 => "OPERADOR",
+                                                3 => "FUNCIONÁRIO",
+                                                _ => "DESCONHECIDO"
+                                            };
 
-                                            <td>
-                                                @item.Id
-                                            </td>
+                                            <tr class="@(item.Ativo ? "" : "table-secondary opacity-75")">
 
-                                            <td class="fw-semibold">
-                                                @item.Nome
-                                            </td>
+                                                <td>
+                                                    @item.Id
+                                                </td>
 
-                                            <td>
-                                                @item.Email
-                                            </td>
+                                                <td class="fw-semibold">
+                                                    @item.Nome
+                                                </td>
 
-                                            <td class="tipo">
-                                                @tipo
-                                            </td>
+                                                <td>
+                                                    @item.Email
+                                                </td>
 
-                                            <td>
+                                                @if(Context.Session.GetString("tipo") == "2")
+                                                {
+                                                    <td class="tipo">
+                                                        @tipo
+                                                    </td>
+                                                }
 
-                                                <a href="/Usuarios/Update/@item.Id"
-                                                   class="btn btn-sm btn-warning text-white">
+                                                <td class="status">
 
-                                                    Editar
+                                                    @if(item.Ativo)
+                                                    {
+                                                        <span class="badge bg-success">
 
-                                                </a>
+                                                            Ativo
 
-                                                <button class="btn btn-sm btn-danger"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#modalExcluir_@item.Id">
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary">
 
-                                                    Excluir
+                                                            Inativo
 
-                                                </button>
+                                                        </span>
+                                                    }
 
-                                            </td>
+                                                </td>
 
-                                        </tr>
+                                                <td>
 
-                                        <!-- MODAL -->
-                                        <div class="modal fade"
-                                            id="modalExcluir_@item.Id"
-                                            tabindex="-1">
+                                                    @if(item.Ativo)
+                                                    {
+                                                        <button class="btn btn-sm btn-danger"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modalInativar_@item.Id">
 
-                                            <div class="modal-dialog modal-dialog-centered">
-
-                                                <div class="modal-content border-0 shadow">
-
-                                                    <div class="modal-header"
-                                                        style="background-color:#F15A24;">
-
-                                                        <h5 class="modal-title text-white fw-bold">
-
-                                                            Aviso
-
-                                                        </h5>
-
-                                                        <button type="button"
-                                                                class="btn-close btn-close-white"
-                                                                data-bs-dismiss="modal">
-                                                        </button>
-
-                                                    </div>
-
-                                                    <div class="modal-body">
-
-                                                        Deseja realmente excluir o usuário
-                                                        <strong>@item.Nome</strong>?
-
-                                                    </div>
-
-                                                    <div class="modal-footer">
-
-                                                        <button type="button"
-                                                                class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">
-
-                                                            Cancelar
+                                                            Inativar
 
                                                         </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-sm btn-success"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modalAtivar_@item.Id">
 
-                                                        <a href="/Usuarios/Delete/@item.Id"
-                                                        class="btn btn-danger">
+                                                            Ativar
 
-                                                            Excluir
+                                                        </button>
+                                                    }
 
-                                                        </a>
+                                                    <a href="/Usuarios/Update/@item.Id"
+                                                    class="btn btn-sm btn-warning text-dark fw-bold">
+
+                                                        Editar
+
+                                                    </a>
+
+                                                </td>
+
+                                            </tr>
+
+                                            <!-- MODAL -->
+                                            <div class="modal fade"
+                                                id="modalInativar_@item.Id"
+                                                tabindex="-1">
+
+                                                <div class="modal-dialog modal-dialog-centered">
+
+                                                    <div class="modal-content border-0 shadow">
+
+                                                        <div class="modal-header"
+                                                            style="background-color:#F15A24;">
+
+                                                            <h5 class="modal-title text-white fw-bold">
+
+                                                                Confirmar Inativação
+
+                                                            </h5>
+
+                                                            <button type="button"
+                                                                    class="btn-close btn-close-white"
+                                                                    data-bs-dismiss="modal">
+                                                            </button>
+
+                                                        </div>
+
+                                                        <div class="modal-body">
+
+                                                            Deseja realmente inativar o usuário
+                                                            <strong>@item.Nome</strong>?
+
+                                                        </div>
+
+                                                        <div class="modal-footer">
+
+                                                            <button type="button"
+                                                                    class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+
+                                                                Cancelar
+
+                                                            </button>
+
+                                                            <a href="/Usuarios/Inativar/@item.Id"
+                                                            class="btn btn-danger">
+
+                                                                Inativar
+
+                                                            </a>
+
+                                                        </div>
 
                                                     </div>
 
@@ -325,10 +435,64 @@
 
                                             </div>
 
-                                        </div>
-                                    }
+                                            <!-- MODAL ATIVAR -->
+                                            <div class="modal fade"
+                                                id="modalAtivar_@item.Id"
+                                                tabindex="-1">
 
-                                </tbody>
+                                                <div class="modal-dialog modal-dialog-centered">
+
+                                                    <div class="modal-content border-0 shadow">
+
+                                                        <div class="modal-header bg-success">
+
+                                                            <h5 class="modal-title text-white fw-bold">
+
+                                                                Confirmar Ativação
+
+                                                            </h5>
+
+                                                            <button type="button"
+                                                                    class="btn-close btn-close-white"
+                                                                    data-bs-dismiss="modal">
+                                                            </button>
+
+                                                        </div>
+
+                                                        <div class="modal-body">
+
+                                                            Deseja realmente ativar o usuário
+                                                            <strong>@item.Nome</strong>?
+
+                                                        </div>
+
+                                                        <div class="modal-footer">
+
+                                                            <button type="button"
+                                                                    class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+
+                                                                Cancelar
+
+                                                            </button>
+
+                                                            <a href="/Usuarios/Ativar/@item.Id"
+                                                            class="btn btn-success">
+
+                                                                Ativar
+
+                                                            </a>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </tbody>
 
                             </table>
                         }
@@ -351,12 +515,19 @@
         const filtroTipo =
             document.getElementById("filtroTipo");
 
+        const filtroStatus =
+            document.getElementById("filtroStatus");
+
         pesquisa.addEventListener("keyup", filtrar);
 
-        // SÓ ADICIONA EVENTO SE EXISTIR
         if(filtroTipo)
         {
             filtroTipo.addEventListener("change", filtrar);
+        }
+
+        if(filtroStatus)
+        {
+            filtroStatus.addEventListener("change", filtrar);
         }
 
         function filtrar()
@@ -368,11 +539,20 @@
 
             let tipoSelecionado = "";
 
-            // SÓ PEGA VALOR SE EXISTIR
+            let statusSelecionado = "";
+
             if(filtroTipo)
             {
                 tipoSelecionado =
                     filtroTipo.value
+                    .trim()
+                    .toLowerCase();
+            }
+
+            if(filtroStatus)
+            {
+                statusSelecionado =
+                    filtroStatus.value
                     .trim()
                     .toLowerCase();
             }
@@ -396,8 +576,14 @@
                     .toLowerCase();
 
                 let tipoLinha =
-                    linha.children[3]
-                    .innerText
+                    linha.querySelector(".tipo")
+                    ?.innerText
+                    .trim()
+                    .toLowerCase();
+
+                let statusLinha =
+                    linha.querySelector(".status")
+                    ?.innerText
                     .trim()
                     .toLowerCase();
 
@@ -406,13 +592,20 @@
                     nome.includes(texto)
                     || email.includes(texto);
 
-                // FILTRO
-                let filtroOk =
+                // FILTRO TIPO
+                let filtroTipoOk =
                     tipoSelecionado === ""
                     || tipoLinha.includes(tipoSelecionado);
 
+                // FILTRO STATUS
+                let filtroStatusOk =
+                    statusSelecionado === ""
+                    || statusLinha.includes(statusSelecionado);
+
                 linha.style.display =
-                    (pesquisaOk && filtroOk)
+                    (pesquisaOk
+                    && filtroTipoOk
+                    && filtroStatusOk)
                     ? ""
                     : "none";
             });

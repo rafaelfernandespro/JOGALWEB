@@ -44,7 +44,7 @@
                 </span>
 
                 <a href="/Login"
-                class="btn btn-light fw-bold">
+                class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -103,10 +103,13 @@
                                 </label>
 
                                 <input type="text"
-                                       name="Nome"
-                                       class="form-control"
-                                       required>
-
+                                        name="Nome"
+                                        class="form-control"
+                                        oninput="
+                                                this.value =
+                                                this.value.replace(/[0-9]/g, '')
+                                        "
+                                        required>
                             </div>
 
                             <div class="mb-3">
@@ -133,9 +136,13 @@
                                 </label>
 
                                 <input type="text"
-                                       name="Endereco"
-                                       class="form-control"
-                                       required>
+                                        name="Endereco"
+                                        class="form-control"
+                                        oninput="
+                                                this.value =
+                                                this.value.replace(/[0-9]/g, '')
+                                        "
+                                        required>
 
                             </div>
 
@@ -159,9 +166,14 @@
                                 </label>
 
                                 <input type="text"
-                                    name="Telefone"
-                                    value="@Model.Telefone"
-                                    class="form-control">
+                                        name="Telefone"
+                                        class="form-control"
+                                        maxlength="11"
+                                        oninput="
+                                                this.value =
+                                                this.value.replace(/\D/g, '')
+                                        "
+                                        required>
 
                             </div>
 
@@ -191,33 +203,40 @@
 
                             </div>
 
-                            <div class="mb-4">
+                            @if(Context.Session.GetString("tipo") == "2")
+                            {
+                                <div class="mb-4">
 
-                                <label class="form-label">
-                                    Tipo
-                                </label>
+                                    <label class="form-label">
+                                        Tipo
+                                    </label>
 
-                                <select name="Tipo"
-                                        class="form-select">
+                                    <select name="Tipo"
+                                            class="form-select">
 
-                                    <option value="1">
-                                        CLIENTE
-                                    </option>
-
-                                    @if(Context.Session.GetString("tipo") == "2")
-                                    {
-                                        <option value="2">
-                                            OPERADOR
+                                        <option value="1">
+                                            CLIENTE
                                         </option>
 
-                                        <option value="3">
-                                            FUNCIONARIO
-                                        </option>
-                                    }
+                                            <option value="2">
+                                                OPERADOR
+                                            </option>
 
-                                </select>
+                                            <option value="3">
+                                                FUNCIONARIO
+                                            </option>
 
-                            </div>
+                                    </select>
+
+                                </div>
+                            }
+
+                            <a href="/Usuarios"
+                               class="btn btn-dark">
+
+                                Voltar
+
+                            </a>
 
                             <button type="submit"
                                     class="btn text-white fw-bold"
@@ -227,12 +246,7 @@
 
                             </button>
 
-                            <a href="/Usuarios"
-                               class="btn btn-secondary">
-
-                                Voltar
-
-                            </a>
+                            
 
                         </form>
 

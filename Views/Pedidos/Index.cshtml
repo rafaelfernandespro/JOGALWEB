@@ -44,7 +44,7 @@
                 </span>
 
                 <a href="/Login"
-                   class="btn btn-light fw-bold">
+                   class="btn btn-dark fw-bold">
 
                     Sair
 
@@ -77,7 +77,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Dashboard"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
 
                                 Dashboard
 
@@ -88,7 +88,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Produtos"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
 
                                 Estoque
 
@@ -99,7 +99,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Pedidos"
-                               class="nav-link text-white fw-bold">
+                               class="nav-link text-white fs-4 fw-bold">
 
                                 Pedidos
 
@@ -110,7 +110,7 @@
                         <li class="nav-item mb-2">
 
                             <a href="/Usuarios"
-                               class="nav-link text-white">
+                               class="nav-link text-white fs-4">
 
                                 Usuários
 
@@ -143,6 +143,118 @@
 
                 </div>
 
+                <!--FILTROS-->
+
+                <div class="card border-0 shadow mb-4">
+
+                    <div class="card-body">
+
+                        <div class="row g-3">
+
+                            <!-- ID -->
+                            <div class="col-md-2">
+
+                                <label class="form-label fw-semibold">
+                                    ID Pedido
+                                </label>
+
+                                <input type="number"
+                                    id="filtroId"
+                                    class="form-control"
+                                    placeholder="Ex: 1024"
+                                    min="1"
+                                    oninput="this.value =
+                                        this.value.replace('-', '')">
+
+                            </div>
+
+                            <!-- STATUS -->
+                            <div class="col-md-2">
+
+                                <label class="form-label fw-semibold">
+                                    Status
+                                </label>
+
+                                <select id="filtroStatus"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Todos
+                                    </option>
+
+                                    @foreach(var status in ViewBag.Status)
+                                    {
+                                        <option value="@status.Descricao">
+
+                                            @status.Descricao
+
+                                        </option>
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <!-- DATA PEDIDO -->
+                            <div class="col-md-3">
+
+                                <label class="form-label fw-semibold">
+                                    Pedido de
+                                </label>
+
+                                <input type="date"
+                                    id="dataPedidoInicio"
+                                    class="form-control"
+                                    max="9999-12-31">
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <label class="form-label fw-semibold">
+                                    Pedido até
+                                </label>
+
+                                <input type="date"
+                                    id="dataPedidoFim"
+                                    class="form-control"
+                                    max="9999-12-31">
+
+                            </div>
+
+                            <!-- DATA FINAL -->
+                            <div class="col-md-3">
+
+                                <label class="form-label fw-semibold">
+                                    Finalizado de
+                                </label>
+
+                                <input type="date"
+                                    id="dataFinalInicio"
+                                    class="form-control"
+                                    max="9999-12-31">
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <label class="form-label fw-semibold">
+                                    Finalizado até
+                                </label>
+
+                                <input type="date"
+                                    id="dataFinalFim"
+                                    class="form-control"
+                                    max="9999-12-31">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
                 <div class="card border-0 shadow">
 
                     <div class="card-body">
@@ -151,13 +263,14 @@
 
                             <thead>
 
+                                
                                 <tr>
-
                                     <th>ID</th>
                                     <th>Cliente</th>
                                     <th>Data</th>
                                     <th>Total</th>
                                     <th>Status</th>
+                                    <th>Finalizado</th>
                                     <th>Ações</th>
 
                                 </tr>
@@ -178,7 +291,11 @@
                                         _ => "bg-secondary"
                                     };
 
-                                    <tr>
+                                    <tr
+                                        data-id="@pedido.Id"
+                                        data-status="@pedido.Status?.Descricao"
+                                        data-pedido="@pedido.DataPedido.ToString("yyyy-MM-dd")"
+                                        data-final="@(pedido.DataFinal?.ToString("yyyy-MM-dd") ?? "")">
 
                                         <td>
                                             #@pedido.Id
@@ -199,6 +316,7 @@
 
                                         </td>
 
+
                                         <td>
 
                                             <span class="badge @corStatus">
@@ -211,8 +329,29 @@
 
                                         <td>
 
+                                            @if(pedido.DataFinal != null)
+                                            {
+                                                <span class="fw-semibold text-success">
+
+                                                    @pedido.DataFinal?.ToString("dd/MM/yyyy HH:mm")
+
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">
+
+                                                    Em andamento
+
+                                                </span>
+                                            }
+
+                                        </td>
+
+                                        <td>
+
                                             <a href="/Pedidos/Detalhes/@pedido.Id"
-                                               class="btn btn-dark btn-sm">
+                                               class="btn btn-dark btn-sm fw-bold">
 
                                                 Detalhes
 
@@ -236,6 +375,118 @@
         </div>
 
     </div>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () =>
+        {
+            const filtroId =
+                document.getElementById("filtroId");
+
+            const filtroStatus =
+                document.getElementById("filtroStatus");
+
+            const dataPedidoInicio =
+                document.getElementById("dataPedidoInicio");
+
+            const dataPedidoFim =
+                document.getElementById("dataPedidoFim");
+
+            const dataFinalInicio =
+                document.getElementById("dataFinalInicio");
+
+            const dataFinalFim =
+                document.getElementById("dataFinalFim");
+
+            const linhas =
+                document.querySelectorAll("tbody tr");
+
+            [
+                filtroId,
+                filtroStatus,
+                dataPedidoInicio,
+                dataPedidoFim,
+                dataFinalInicio,
+                dataFinalFim
+            ].forEach(campo =>
+            {
+                campo.addEventListener("input", filtrar);
+                campo.addEventListener("change", filtrar);
+            });
+
+            function filtrar()
+            {
+                linhas.forEach(linha =>
+                {
+                    const id =
+                        linha.dataset.id;
+
+                    const status =
+                        linha.dataset.status?.toLowerCase();
+
+                    const dataPedido =
+                        linha.dataset.pedido;
+
+                    const dataFinal =
+                        linha.dataset.final;
+
+                    let mostrar = true;
+
+                    // ID
+                    if(filtroId.value &&
+                        !id.includes(filtroId.value))
+                    {
+                        mostrar = false;
+                    }
+
+                    // STATUS
+                    if(filtroStatus.value &&
+                        status !== filtroStatus.value.toLowerCase())
+                    {
+                        mostrar = false;
+                    }
+
+                    // DATA PEDIDO INICIO
+                    if(dataPedidoInicio.value &&
+                        dataPedido < dataPedidoInicio.value)
+                    {
+                        mostrar = false;
+                    }
+
+                    // DATA PEDIDO FIM
+                    if(dataPedidoFim.value &&
+                        dataPedido > dataPedidoFim.value)
+                    {
+                        mostrar = false;
+                    }
+
+                    // DATA FINAL INICIO
+                    if(dataFinalInicio.value)
+                    {
+                        if(!dataFinal ||
+                            dataFinal < dataFinalInicio.value)
+                        {
+                            mostrar = false;
+                        }
+                    }
+
+                    // DATA FINAL FIM
+                    if(dataFinalFim.value)
+                    {
+                        if(!dataFinal ||
+                            dataFinal > dataFinalFim.value)
+                        {
+                            mostrar = false;
+                        }
+                    }
+
+                    linha.style.display =
+                        mostrar ? "" : "none";
+                });
+            }
+        });
+
+    </script>
 
 </body>
 

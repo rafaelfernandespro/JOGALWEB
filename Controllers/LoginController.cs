@@ -24,9 +24,10 @@ namespace inter.Controllers
         public IActionResult Entrar(string email, string senha)
         {
             var usuario = _context.Pessoas
-                .FirstOrDefault(u =>
-                    u.Email == email &&
-                    u.Senha == senha);
+                    .FirstOrDefault(u =>
+                        u.Email == email
+                        && u.Senha == senha
+                        && u.Ativo);
 
             if(usuario == null)
             {
@@ -121,11 +122,25 @@ namespace inter.Controllers
                 Telefone = telefone,
 
                 // CLIENTE
-                Tipo = 1
+                Tipo = 1,
+
+                Ativo = true
             };
 
+            // SALVA PESSOA
             _context.Pessoas.Add(novaPessoa);
 
+            _context.SaveChanges();
+
+            // CRIA CLIENTE
+            Clientes novoCli = new Clientes
+            {
+                Id = novaPessoa.Id
+            };
+
+            _context.Clientes.Add(novoCli);
+
+            // SALVA CLIENTE
             _context.SaveChanges();
 
             TempData["Sucesso"] =

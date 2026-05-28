@@ -273,21 +273,19 @@
 
                         <div class="row g-3">
 
-                            <!-- PESQUISA -->
-                            <div class="col-md-5">
+                            <div class="d-flex gap-3">
 
+                                <!-- PESQUISA -->
                                 <input type="text"
-                                        id="barraPesquisa"
-                                        class="form-control"
-                                        placeholder="Pesquisar produto...">
+                                    id="barraPesquisa"
+                                    class="form-control"
+                                    placeholder="Pesquisar produto..."
+                                    style="width: 420px;">
 
-                            </div>
-
-                            <!-- CATEGORIA -->
-                            <div class="col-md-5">
-
+                                <!-- CATEGORIA -->
                                 <select id="filtroCategoria"
-                                        class="form-select">
+                                        class="form-select"
+                                        style="width: 260px;">
 
                                     <option value="">
                                         Todas as categorias
@@ -298,8 +296,7 @@
                                         if(ViewBag.TipoSelecionado != null
                                             && ViewBag.TipoSelecionado == tipo.Id)
                                         {
-                                            <option value="@tipo.Id"
-                                                    selected>
+                                            <option value="@tipo.Id" selected>
 
                                                 @tipo.Descricao
 
