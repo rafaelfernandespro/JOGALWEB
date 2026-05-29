@@ -179,6 +179,11 @@
                     </div>
                 }
 
+                @{
+                    int qtdTotal =
+                    Model.Itens.Sum(i => i.Quantidade);
+                }
+
                 <hr class="mt-4" />
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -196,7 +201,14 @@
 
                     </h2>
 
+
                 </div>
+
+                <span class="text-muted fs-5">
+
+                    Quantidade: @qtdTotal
+
+                </span>
 
             </div>
 

@@ -85,6 +85,16 @@ namespace inter.Controllers
             string senha,
             string telefone)
         {
+            nome = System.Globalization.CultureInfo
+                .CurrentCulture
+                .TextInfo
+                .ToTitleCase(nome.ToLower());
+
+            endereco = System.Globalization.CultureInfo
+                .CurrentCulture
+                .TextInfo
+                .ToTitleCase(endereco.ToLower());
+
             // VERIFICA EMAIL
             bool emailExiste =
                 _context.Pessoas.Any(p =>

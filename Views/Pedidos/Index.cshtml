@@ -112,7 +112,9 @@
                             <a href="/Usuarios"
                                class="nav-link text-white fs-4">
 
-                                Usuários
+                                @(Context.Session.GetString("tipo") == "3"
+                            ? "Clientes"
+                            : "Usuários")
 
                             </a>
 

@@ -242,7 +242,9 @@
                                     class="btn text-white fw-bold"
                                     style="background-color:#F15A24;">
 
-                                Salvar Usuário
+                                Salvar @(Context.Session.GetString("tipo") == "3"
+                            ? "Cliente"
+                            : "Usuário")
 
                             </button>
 
